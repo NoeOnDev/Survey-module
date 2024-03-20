@@ -19,6 +19,7 @@
     "express": "^4.19.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "passport-google-oauth20": "^2.0.0",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.1"
