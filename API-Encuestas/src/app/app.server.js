@@ -5,7 +5,7 @@ import passport from "passport";
 import session from "express-session";
 import authRoutes from "../routes/auth.routes.js";
 import { sequelize } from "../database/db.config.js";
-import { googleAuthCool } from "../controllers/auth.controller.js";
+import { googleAuthCool } from "../services/auth.service.js";
 import "../models/assosiations.models.js";
 
 export async function server() {
