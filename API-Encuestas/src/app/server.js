@@ -18,7 +18,7 @@ async function server() {
 
         app.listen(PORT, () => { console.log(`🚀 Server running on http://localhost:${PORT}`); });
     } catch (error) {
-        
+        console.error('Error on server.js: ', error);
     }
 }
 
