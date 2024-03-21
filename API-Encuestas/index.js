@@ -165,9 +165,13 @@ async function findOrCreateUser(profile, done) {
 async function registerUser(req, res) {
   try {
     const user = await User.create(req.body);
+    if (!user) {
+      return res.status(400).json({ message: "User could not be created" });
+    }
+
     res.status(201).json(user);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(500).json(err);
   }
 }
 
