@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import session from 'express-session';
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 import { Sequelize, DataTypes, Model } from "sequelize";
@@ -13,6 +14,11 @@ const { PORT, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT } = process.env;
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(session({
+    secret: 'helloworld',
+    resave: false,
+    saveUninitialized: false,
+  }));
 app.use(passport.initialize());
 
 app.get(
@@ -40,22 +46,14 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
 });
 
 sequelize.authenticate();
-sequelize.sync({ force: true });
+sequelize.sync();
 
-class User extends Model {}
-
-User.init(
-  {
-    googleId: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+const User = sequelize.define("user", {
+  googleId: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
-  {
-    sequelize,
-    modelName: "user",
-  }
-);
+});
 
 passport.use(
   new GoogleStrategy(
@@ -64,10 +62,27 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
-    function (accessToken, refreshToken, profile, cb) {
-      User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        return cb(err, user);
-      });
+    function (accessToken, refreshToken, profile, done) {
+      User.findOrCreate({ where: { googleId: profile.id } })
+        .then(([user, created]) => {
+          return done(null, user);
+        })
+        .catch((err) => {
+          return done(err);
+        });
     }
   )
 );
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findByPk(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
