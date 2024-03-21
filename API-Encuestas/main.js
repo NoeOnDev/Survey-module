@@ -88,7 +88,7 @@ User.init(
 );
 
 // Configurar la estrategia de autenticación de Google
-export async function googleAuthGlobal() {
+async function googleAuthGlobal() {
   passport.use(
     new GoogleStrategy(
       {
@@ -117,7 +117,36 @@ export async function googleAuthGlobal() {
 }
 
 // Funciones que se usan en las rutas
-export async function findOrCreateUser(profile, done) {
+async function googleAuth(req, res, next) {
+  passport.authenticate("google", { scope: ["profile", "email"] })(
+    req,
+    res,
+    next
+  );
+}
+
+async function googleAuthCallback(req, res, next) {
+  passport.authenticate(
+    "google",
+    { failureRedirect: "/login" },
+    function (err, user, info) {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return res.redirect("/login");
+      }
+      req.logIn(user, function (err) {
+        if (err) {
+          return next(err);
+        }
+        return res.redirect("http://localhost:5173/");
+      });
+    }
+  )(req, res, next);
+}
+
+async function findOrCreateUser(profile, done) {
   try {
     const [user, created] = await User.findOrCreate({
       where: { googleId: profile.id },
@@ -133,31 +162,22 @@ export async function findOrCreateUser(profile, done) {
   }
 }
 
-// Definir las rutas
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  function (req, res) {
-    res.redirect("http://localhost:5173/");
+async function registerUser(req, res) {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json(user);
+  } catch (err) {
+    res.status(400).json(err);
   }
-);
+}
 
-app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  const user = await User.create({
-    name,
-    email,
-    password,
-    registrationMethod: "local",
-  });
-  res.json(user);
-});
+// Definir las rutas
+app.get("/auth/google", googleAuth);
+app.get("/auth/google/callback", googleAuthCallback);
+app.post("/register", registerUser);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Iniciar la estrategia de autenticación de Google
+googleAuthGlobal();
+
+// Iniciar la aplicación de Express
+app.listen(PORT);
