@@ -28,7 +28,10 @@ User.init(
   },
   {
     sequelize,
+    tableName: "users",
     modelName: "user",
+    paranoid: true,
+    timestamps: true,
     hooks: {
       beforeCreate: async (user) => {
         if (user.password) {
