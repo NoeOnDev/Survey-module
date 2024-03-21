@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import session from 'express-session';
+import bcrypt from "bcrypt";
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 import { Sequelize, DataTypes, Model } from "sequelize";
@@ -23,7 +24,7 @@ app.use(passport.initialize());
 
 app.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 app.get(
@@ -46,13 +47,47 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
 });
 
 sequelize.authenticate();
-sequelize.sync();
+sequelize.sync( { force: true } );
 
-const User = sequelize.define("user", {
+class User extends Model {}
+
+User.init({
   googleId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  registrationMethod: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+}, {
+  sequelize,
+  modelName: "user",
+  hooks: {
+    beforeCreate: (user) => {
+      if (user.password) {
+        user.password = bcrypt.hashSync(user.password, 10);
+      }
+      
+      if (user.googleId) {
+        user.registrationMethod = "google";
+      } else {
+        user.registrationMethod = "email";
+      }
+    }
+  }
 });
 
 passport.use(
@@ -63,7 +98,14 @@ passport.use(
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
     function (accessToken, refreshToken, profile, done) {
-      User.findOrCreate({ where: { googleId: profile.id } })
+      User.findOrCreate({ 
+        where: { googleId: profile.id },
+        defaults: {
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          registrationMethod: 'google'
+        }
+      })
         .then(([user, created]) => {
           return done(null, user);
         })
