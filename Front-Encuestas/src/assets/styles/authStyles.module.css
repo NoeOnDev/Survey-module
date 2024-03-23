@@ -8,8 +8,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #e8e8e8;
-    min-height: 100vh;
+    min-height: 80vh;
 }
 
 .wrapper {
@@ -33,7 +32,7 @@ body {
     height: 20px;
   }
   
-  .card-side::before {
+  .cardSide::before {
     position: absolute;
     content: 'Log in';
     left: -70px;
@@ -44,7 +43,7 @@ body {
     font-weight: 600;
   }
   
-  .card-side::after {
+  .cardSide::after {
     position: absolute;
     content: 'Sign up';
     left: 70px;
@@ -99,17 +98,17 @@ body {
     transform: translateX(30px);
   }
   
-  .toggle:checked ~ .card-side:before {
+  .toggle:checked ~ .cardSide:before {
     text-decoration: none;
   }
   
-  .toggle:checked ~ .card-side:after {
+  .toggle:checked ~ .cardSide:after {
     text-decoration: underline;
   }
   
   /* card */ 
   
-  .flip-card__inner {
+  .flipCardInner {
     width: 300px;
     height: 350px;
     position: relative;
@@ -122,15 +121,15 @@ body {
     transform-style: preserve-3d;
   }
   
-  .toggle:checked ~ .flip-card__inner {
+  .toggle:checked ~ .flipCardInner {
     transform: rotateY(180deg);
   }
   
-  .toggle:checked ~ .flip-card__front {
+  .toggle:checked ~ .flipCardFront {
     box-shadow: none;
   }
   
-  .flip-card__front, .flip-card__back {
+  .flipCardFront, .flip-card__back {
     padding: 20px;
     position: absolute;
     display: flex;
@@ -150,7 +149,7 @@ body {
     transform: rotateY(180deg);
   }
   
-  .flip-card__form {
+  .flipCardForm {
     display: flex;
     flex-direction: column;
     align-items: center;
