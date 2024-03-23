@@ -129,7 +129,7 @@ body {
     box-shadow: none;
   }
   
-  .flipCardFront, .flip-card__back {
+  .flipCardFront, .flipCardBack {
     padding: 20px;
     position: absolute;
     display: flex;
@@ -144,7 +144,7 @@ body {
     box-shadow: 4px 4px var(--main-color);
   }
   
-  .flip-card__back {
+  .flipCardBack {
     width: 100%;
     transform: rotateY(180deg);
   }
@@ -164,7 +164,7 @@ body {
     color: var(--main-color);
   }
   
-  .flip-card__input {
+  .flipCardInput {
     width: 250px;
     height: 40px;
     border-radius: 5px;
@@ -178,21 +178,21 @@ body {
     outline: none;
   }
   
-  .flip-card__input::placeholder {
+  .flipCardInput::placeholder {
     color: var(--font-color-sub);
     opacity: 0.8;
   }
   
-  .flip-card__input:focus {
+  .flipCardInput:focus {
     border: 2px solid var(--input-focus);
   }
   
-  .flip-card__btn:active, .button-confirm:active {
+  .flipCardBtn:active, .button-confirm:active {
     box-shadow: 0px 0px var(--main-color);
     transform: translate(3px, 3px);
   }
   
-  .flip-card__btn {
+  .flipCardBtn {
     margin: 20px 0 20px 0;
     width: 120px;
     height: 40px;
