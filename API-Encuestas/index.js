@@ -1,4 +1,3 @@
-
 // Importar las librerías necesarias
 import cors from "cors";
 import morgan from "morgan";
@@ -7,7 +6,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import session from "express-session";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import GoogleStrategy from "passport-google-oauth20";
 import { Sequelize, DataTypes, Model } from "sequelize";
 
@@ -105,10 +104,10 @@ async function googleAuthGlobal() {
 
   passport.deserializeUser(async (id, done) => {
     try {
-      const user = await User.findByPk(id);
+      const user = await findUserById(id);
       done(null, user);
-    } catch (err) {
-      done(err, null);
+    } catch (error) {
+      done(error, null);
     }
   });
 }
@@ -134,11 +133,19 @@ async function googleAuthCallback(req, res, next) {
         return res.redirect("/login");
       }
 
-    res.cookie('auth_token', token, { httpOnly: true, secure: true });
-    return res.redirect('http://localhost:5173/');
-
+      res.cookie("auth_token", token, { httpOnly: true, secure: true });
+      return res.redirect("http://localhost:5173/");
     }
   )(req, res, next);
+}
+
+async function findUserById(id) {
+  try {
+    const user = await User.findByPk(id);
+    return user;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function findOrCreateUser(profile, done) {
@@ -152,7 +159,7 @@ async function findOrCreateUser(profile, done) {
       },
     });
 
-    const token = jwt.sign({ id: user.id }, 'your-secret-key');
+    const token = jwt.sign({ id: user.id }, "your-secret-key");
 
     return done(null, token);
   } catch (err) {
@@ -183,4 +190,3 @@ googleAuthGlobal();
 
 // Iniciar la aplicación de Express
 app.listen(PORT);
-
