@@ -1,0 +1,29 @@
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import passport from "passport";
+import cookieParser from "cookie-parser";
+import { googleConfigAuth } from "./config/passport.config.js";
+import { authAndSync } from "./config/db.config.js";
+
+process.loadEnvFile();
+
+export async function startServer() {
+    try {
+        const app = express();
+        const PORT = process.env.PORT || 3000;
+        
+        app.use(cors());
+        app.use(morgan("dev"));
+        app.use(express.json());
+        app.use(passport.initialize());
+        app.use(cookieParser());
+        
+        await authAndSync();
+        await googleConfigAuth();
+        
+        app.listen(PORT);
+    } catch (error) {
+        console.error("Unable to start the server:", error);
+    }
+}
