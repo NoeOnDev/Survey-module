@@ -1,11 +1,13 @@
-/*
+
 // Importar las librerías necesarias
 import cors from "cors";
 import morgan from "morgan";
 import bcrypt from "bcrypt";
 import express from "express";
+import jwt from "jsonwebtoken";
 import passport from "passport";
 import session from "express-session";
+import cookieParser from 'cookie-parser';
 import GoogleStrategy from "passport-google-oauth20";
 import { Sequelize, DataTypes, Model } from "sequelize";
 
@@ -35,13 +37,7 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(passport.initialize());
-app.use(
-  session({
-    secret: "helloworld",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use(cookieParser());
 
 // Definir el modelo de usuario
 class User extends Model {}
@@ -130,19 +126,17 @@ async function googleAuthCallback(req, res, next) {
   passport.authenticate(
     "google",
     { failureRedirect: "/login" },
-    function (err, user, info) {
+    function (err, token, info) {
       if (err) {
         return next(err);
       }
-      if (!user) {
+      if (!token) {
         return res.redirect("/login");
       }
-      req.logIn(user, function (err) {
-        if (err) {
-          return next(err);
-        }
-        return res.redirect("http://localhost:5173/");
-      });
+
+    res.cookie('auth_token', token, { httpOnly: true, secure: true });
+    return res.redirect('http://localhost:5173/');
+
     }
   )(req, res, next);
 }
@@ -157,7 +151,10 @@ async function findOrCreateUser(profile, done) {
         registrationMethod: "google",
       },
     });
-    return done(null, user);
+
+    const token = jwt.sign({ id: user.id }, 'your-secret-key');
+
+    return done(null, token);
   } catch (err) {
     return done(err);
   }
@@ -187,4 +184,3 @@ googleAuthGlobal();
 // Iniciar la aplicación de Express
 app.listen(PORT);
 
-*/
