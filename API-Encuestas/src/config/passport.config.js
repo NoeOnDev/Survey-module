@@ -1,5 +1,6 @@
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
+import authController from "../controller/auth.controller.js";
 
 process.loadEnvFile();
 
@@ -12,7 +13,7 @@ export async function googleConfigAuth() {
             clientSecret: GOOGLE_CLIENT_SECRET,
             callbackURL: GOOGLE_CALLBACK_URL
         }, function (accessToken, refreshToken, profile, done) {
-            findOrCreateUser(profile, done);
+            authController.findOrCreateUser(profile, done);
         })
     );
     passport.serializeUser((user, done) => {
@@ -21,7 +22,7 @@ export async function googleConfigAuth() {
 
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await findUserById(id);
+            const user = await authController.findUserById(id);
             done(null, user);
         } catch (error) {
             done(error, null);

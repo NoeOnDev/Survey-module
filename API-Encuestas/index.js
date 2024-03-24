@@ -1,3 +1,4 @@
+/*
 // Importar las librerías necesarias
 import cors from "cors";
 import morgan from "morgan";
@@ -190,3 +191,5 @@ googleAuthGlobal();
 
 // Iniciar la aplicación de Express
 app.listen(PORT);
+
+*/
