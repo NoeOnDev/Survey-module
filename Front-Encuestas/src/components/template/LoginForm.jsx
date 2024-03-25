@@ -1,7 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../../assets/styles/authStyles.module.css';
 
 function LoginForm() {
+
+    const [email, setEmail] = useState('');
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    const handleLocalLogin = async (event) => {
+        event.preventDefault();
+
+        const response = await fetch('http://localhost:9020/auth/local', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message);
+        } else {
+            alert(`Error: ${data.message}`);
+        }
+    };
 
     const handleGoogleLogin = (event) => {
         event.preventDefault();
@@ -18,8 +44,8 @@ function LoginForm() {
                 <span>
                     Get started with your email below
                 </span>
-                <input type="email" placeholder="Email" name="email" />
-                <button className={styles.oauthButton}>
+                <input type="email" placeholder="Email" name="email" value={email} onChange={handleEmailChange} />
+                <button onClick={handleLocalLogin} className={styles.oauthButton}>
                     Continue
                     <svg className={styles.icon} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="m6 17 5-5-5-5"></path><path d="m13 17 5-5-5-5"></path>

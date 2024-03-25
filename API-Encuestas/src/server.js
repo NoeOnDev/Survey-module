@@ -3,9 +3,9 @@ import cors from "cors";
 import morgan from "morgan";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import authController from "./controller/auth.controller.js";
 import { googleConfigAuth } from "./config/passport.config.js";
 import { authAndSync } from "./config/db.config.js";
-import authController from "./controller/auth.controller.js";
 
 process.loadEnvFile();
 
@@ -25,6 +25,7 @@ export async function startServer() {
 
         app.get("/auth/google", authController.googleAuth);
         app.get("/auth/google/callback", authController.googleAuthCallback);
+        app.post("/auth/local", authController.findOrCreateUser);
         
         app.listen(PORT);
     } catch (error) {

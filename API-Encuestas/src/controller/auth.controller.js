@@ -55,8 +55,8 @@ class AuthController {
       const token = jwt.sign({ id: user.id }, "your-secret-key");
 
       return done(null, token);
-    } catch (err) {
-      return done(err);
+    } catch (error) {
+      return done(error);
     }
   }
 
@@ -87,9 +87,7 @@ class AuthController {
 
       await transporter.sendMail(mailOptions);
 
-      res
-        .status(200)
-        .json({ message: "Verification code has been sent to your email." });
+      res.status(200).json({ message: "Verification code has been sent to your email." });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
