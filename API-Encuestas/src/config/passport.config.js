@@ -8,22 +8,14 @@ const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL } = process.
 
 export async function googleConfigAuth() {
     passport.use(
-        new GoogleStrategy(
-          {
+        new GoogleStrategy({
             clientID: GOOGLE_CLIENT_ID,
             clientSecret: GOOGLE_CLIENT_SECRET,
-            callbackURL: GOOGLE_CALLBACK_URL,
-          },
-          async function (accessToken, refreshToken, profile, done) {
-            try {
-              const token = await authController.findOrCreateUser(profile, 'google');
-              done(null, token);
-            } catch (error) {
-              done(error);
-            }
-          }
-        )
-      );
+            callbackURL: GOOGLE_CALLBACK_URL
+        }, function (accessToken, refreshToken, profile, done) {
+            authController.findOrCreateUser(profile, done);
+        })
+    );
     passport.serializeUser((user, done) => {
         done(null, user.id);
     });

@@ -41,50 +41,57 @@ class AuthController {
     }
   }
 
-  async findOrCreateUser(profile, registrationMethod, res) {
+  async findOrCreateUser(profile, done) {
     try {
-      let condition;
-      let defaults;
-  
-      if (registrationMethod === 'google') {
-        condition = { googleId: profile.id };
-        defaults = {
+      const [user, created] = await User.findOrCreate({
+        where: { googleId: profile.id },
+        defaults: {
           name: profile.displayName,
           email: profile.emails[0].value,
-          registrationMethod: 'google',
-        };
-      } else if (registrationMethod === 'local') {
-        condition = { email: profile.email };
-        defaults = {
-          registrationMethod: 'local',
-        };
-      }
-  
-      const [user, created] = await User.findOrCreate({
-        where: condition,
-        defaults,
+          registrationMethod: "google",
+        },
       });
-  
-      if (registrationMethod === 'local') {
-        const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+      
+      return done(null, token);
+    } catch (error) {
+      return done(error);
+    }
+  }
+
+  async findOrCreateUserLocal(req, res) {
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ where: { email: email } });
+
+      const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+      if (user) {
         user.code = verificationCode;
         await user.save();
-  
-        const mailOptions = {
-          from: "noeon",
-          to: user.email,
-          subject: "Verification code",
-          text: `Your verification code is ${verificationCode}`,
-        };
-  
-        await transporter.sendMail(mailOptions);
-        res.status(200).json({ message: "Verification code has been sent to your email." });
       } else {
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-        return token;
+        await User.create({
+          email: email,
+          code: verificationCode,
+          registrationMethod: "local",
+        });
       }
+
+      const mailOptions = {
+        from: "noeon",
+        to: email,
+        subject: "Verification code",
+        text: `Your verification code is ${verificationCode}`,
+      };
+
+      await transporter.sendMail(mailOptions);
+
+      res
+        .status(200)
+        .json({ message: "Verification code has been sent to your email." });
     } catch (error) {
-      throw error;
+      res.status(500).json({ message: error.message });
     }
   }
 }
