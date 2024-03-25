@@ -5,8 +5,10 @@ function LoginForm() {
 
     const handleGoogleLogin = (event) => {
         event.preventDefault();
-        window.location.href = 'http://localhost:9020/auth/google';
+        const googleAuthURL = 'http://localhost:9020/auth/google';
+        window.location.href = googleAuthURL;
     };
+
     return (
         <div className={styles.container}>
             <form action="" className={styles.form}>

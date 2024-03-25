@@ -16,13 +16,13 @@ class AuthController {
   async googleAuthCallback(req, res, next) {
     passport.authenticate(
       "google",
-      { failureRedirect: "/login" },
+      { failureRedirect: "http://localhost:5173/" },
       function (err, token, info) {
         if (err) {
           return next(err);
         }
         if (!token) {
-          return res.redirect("/login");
+          return res.redirect("http://localhost:5173/");
         }
 
         res.cookie("auth_token", token, { httpOnly: true, secure: true });
