@@ -11,8 +11,20 @@ function LoginForm() {
         <div className={styles.container}>
             <form action="" className={styles.form}>
                 <p>
-                    Welcome,<span>sign in to continue</span>
+                    Welcome,<span>Get started with your email below</span>
                 </p>
+                <input type="email" placeholder="Email" name="email" />
+                <button className={styles.oauthButton}>
+                    Continue
+                    <svg className={styles.icon} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m6 17 5-5-5-5"></path><path d="m13 17 5-5-5-5"></path>
+                    </svg>
+                </button>
+                <div className={styles.separator}>
+                    <div></div>
+                    <span>OR</span>
+                    <div></div>
+                </div>
                 <button onClick={handleGoogleLogin} className={styles.oauthButton}>
                     <svg className={styles.icon} viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
@@ -22,18 +34,6 @@ function LoginForm() {
                         <path d="M1 1h22v22H1z" fill="none"></path>
                     </svg>
                     Continue with Google
-                </button>
-                <div className={styles.separator}>
-                    <div></div>
-                    <span>OR</span>
-                    <div></div>
-                </div>
-                <input type="email" placeholder="Email" name="email" />
-                <button className={styles.oauthButton}>
-                    Continue
-                    <svg className={styles.icon} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="m6 17 5-5-5-5"></path><path d="m13 17 5-5-5-5"></path>
-                    </svg>
                 </button>
             </form>
         </div>
