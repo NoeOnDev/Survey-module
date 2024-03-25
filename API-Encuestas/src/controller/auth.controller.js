@@ -2,6 +2,8 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import User from "../model/user.model.js";
 
+process.loadEnvFile();
+
 class AuthController {
   async googleAuth(req, res, next) {
     passport.authenticate("google", { scope: ["profile", "email"] })(
@@ -24,7 +26,7 @@ class AuthController {
         }
 
         res.cookie("auth_token", token, { httpOnly: true, secure: true });
-        return res.redirect("http://localhost:5173/");
+        return res.redirect("http://localhost:5173/home");
       }
     )(req, res, next);
   }

@@ -1,4 +1,6 @@
+import { startServer } from "./src/server.js";
 
+startServer();
 
 /*
 // Importar las librerías necesarias

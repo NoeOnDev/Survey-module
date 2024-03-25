@@ -5,6 +5,7 @@ import passport from "passport";
 import cookieParser from "cookie-parser";
 import { googleConfigAuth } from "./config/passport.config.js";
 import { authAndSync } from "./config/db.config.js";
+import authController from "./controller/auth.controller.js";
 
 process.loadEnvFile();
 
@@ -21,6 +22,9 @@ export async function startServer() {
         
         await authAndSync();
         await googleConfigAuth();
+
+        app.get("/auth/google", authController.googleAuth);
+        app.get("/auth/google/callback", authController.googleAuthCallback);
         
         app.listen(PORT);
     } catch (error) {
