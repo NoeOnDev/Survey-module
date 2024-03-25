@@ -41,20 +41,48 @@ class AuthController {
     }
   }
 
-  async findOrCreateUser(profile, done) {
+  async findOrCreateUser(profile, registrationMethod, res, done) {
     try {
-      const [user, created] = await User.findOrCreate({
-        where: { googleId: profile.id },
-        defaults: {
+      let condition;
+      let defaults;
+  
+      if (registrationMethod === 'google') {
+        condition = { googleId: profile.id };
+        defaults = {
           name: profile.displayName,
           email: profile.emails[0].value,
-          registrationMethod: "google",
-        },
+          registrationMethod: 'google',
+        };
+      } else if (registrationMethod === 'local') {
+        condition = { email: profile.email };
+        defaults = {
+          registrationMethod: 'local',
+        };
+      }
+  
+      const [user, created] = await User.findOrCreate({
+        where: condition,
+        defaults,
       });
-
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-      
-      return done(null, token);
+  
+      if (registrationMethod === 'local') {
+        const verificationCode = Math.floor(100000 + Math.random() * 900000);
+        user.code = verificationCode;
+        await user.save();
+  
+        const mailOptions = {
+          from: "noeon",
+          to: user.email,
+          subject: "Verification code",
+          text: `Your verification code is ${verificationCode}`,
+        };
+  
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: "Verification code has been sent to your email." });
+      } else {
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+        return done(null, token);
+      }
     } catch (error) {
       return done(error);
     }
