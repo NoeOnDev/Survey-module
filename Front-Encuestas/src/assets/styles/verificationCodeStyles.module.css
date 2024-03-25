@@ -34,8 +34,23 @@ body {
     border-radius: 8px;
     border: 2px solid var(--main-color);
     box-shadow: 4px 4px var(--main-color);
+    gap: 20px;
 }
-  
+
+.form > p {
+  font-family: var(--font-DelaGothicOne);
+  color: var(--font-color);
+  font-weight: 700;
+  font-size: 25px;
+  margin-bottom: -10px;
+}
+
+.form > span {
+  font-family: var(--font-SpaceMono);
+  color: var(--font-color-sub);
+  font-weight: 600;
+  font-size: 17px;
+}
 /*----input-fields------*/
   
 .form .inputFields {
@@ -45,8 +60,8 @@ body {
 }
   
 .form .inputFields input {
-  height: 40px;
-  width: 40px;
+  height: 55px;
+  width: 55px;
   outline: none;
   text-align: center;
   font-size: 1.5rem;
@@ -59,7 +74,6 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Add focus styles */
 .form .inputFields input:focus {
     box-shadow: 0px 0px var(--main-color);
     transform: translate(3px, 3px);

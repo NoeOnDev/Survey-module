@@ -13,8 +13,11 @@ function LoginForm() {
         <div className={styles.container}>
             <form action="" className={styles.form}>
                 <p>
-                    Welcome,<span>Get started with your email below</span>
+                    Welcome
                 </p>
+                <span>
+                    Get started with your email below
+                </span>
                 <input type="email" placeholder="Email" name="email" />
                 <button className={styles.oauthButton}>
                     Continue

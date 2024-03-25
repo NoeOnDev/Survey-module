@@ -25,6 +25,12 @@ function VerificationCodeForm() {
     return (
         <div className={styles.container}>
             <form className={styles.form}>
+                <p>
+                    Verification Code
+                </p>
+                <span>
+                    Enter the verification code sent to your email
+                </span>
                 <div className={styles.inputFields}>
                     {inputs.map((inputRef, i) => (
                         <input
@@ -38,6 +44,8 @@ function VerificationCodeForm() {
                         />
                     ))}
                 </div>
+                <span>Didn't receive the code?</span>
+                <button>Resend</button>
             </form>
         </div>
     );

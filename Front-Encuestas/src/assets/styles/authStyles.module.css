@@ -39,13 +39,11 @@ body {
   font-family: var(--font-DelaGothicOne);
   color: var(--font-color);
   font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
+  font-size: 25px;
+  margin-bottom: -10px;
 }
 
-.form > p > span {
+.form > span {
   font-family: var(--font-SpaceMono);
   color: var(--font-color-sub);
   font-weight: 600;
