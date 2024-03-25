@@ -1,6 +1,7 @@
-import passport from "passport";
 import jwt from "jsonwebtoken";
+import passport from "passport";
 import User from "../model/user.model.js";
+import { transporter } from "../config/nodemailer.config.js";
 
 process.loadEnvFile();
 
@@ -56,6 +57,41 @@ class AuthController {
       return done(null, token);
     } catch (err) {
       return done(err);
+    }
+  }
+
+  async findOrCreateUserLocal(req, res) {
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ where: { email: email } });
+
+      const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+      if (user) {
+        user.code = verificationCode;
+        await user.save();
+      } else {
+        await User.create({
+          email: email,
+          code: verificationCode,
+          registrationMethod: "local",
+        });
+      }
+
+      const mailOptions = {
+        from: "noeon",
+        to: email,
+        subject: "Verification code",
+        text: `Your verification code is ${verificationCode}`,
+      };
+
+      await transporter.sendMail(mailOptions);
+
+      res
+        .status(200)
+        .json({ message: "Verification code has been sent to your email." });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   }
 }
