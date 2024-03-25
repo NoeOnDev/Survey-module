@@ -52,8 +52,8 @@ class AuthController {
         },
       });
 
-      const token = jwt.sign({ id: user.id }, "your-secret-key");
-
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+      
       return done(null, token);
     } catch (error) {
       return done(error);
