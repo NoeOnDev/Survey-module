@@ -41,7 +41,7 @@ class AuthController {
     }
   }
 
-  async findOrCreateUser(profile, registrationMethod, res, done) {
+  async findOrCreateUser(profile, registrationMethod, res) {
     try {
       let condition;
       let defaults;
@@ -81,45 +81,10 @@ class AuthController {
         res.status(200).json({ message: "Verification code has been sent to your email." });
       } else {
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-        return done(null, token);
+        return token;
       }
     } catch (error) {
-      return done(error);
-    }
-  }
-
-  async findOrCreateUserLocal(req, res) {
-    try {
-      const { email } = req.body;
-      const user = await User.findOne({ where: { email: email } });
-
-      const verificationCode = Math.floor(100000 + Math.random() * 900000);
-
-      if (user) {
-        user.code = verificationCode;
-        await user.save();
-      } else {
-        await User.create({
-          email: email,
-          code: verificationCode,
-          registrationMethod: "local",
-        });
-      }
-
-      const mailOptions = {
-        from: "noeon",
-        to: email,
-        subject: "Verification code",
-        text: `Your verification code is ${verificationCode}`,
-      };
-
-      await transporter.sendMail(mailOptions);
-
-      res
-        .status(200)
-        .json({ message: "Verification code has been sent to your email." });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+      throw error;
     }
   }
 }

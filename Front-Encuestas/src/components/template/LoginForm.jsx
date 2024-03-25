@@ -14,7 +14,7 @@ function LoginForm() {
     const handleLocalLogin = async (event) => {
         event.preventDefault();
 
-        const response = await fetch('http://localhost:9020/auth/local', {
+        const response = await fetch('http://localhost:9020/auth/google', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
