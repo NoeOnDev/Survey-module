@@ -45,7 +45,6 @@ function VerificationCodeForm() {
                     ))}
                 </div>
                 <span>Didn't receive the code?</span>
-                <button>Resend</button>
             </form>
         </div>
     );

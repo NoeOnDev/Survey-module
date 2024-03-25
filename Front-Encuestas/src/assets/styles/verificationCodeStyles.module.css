@@ -28,6 +28,7 @@ body {
     max-width: 420px;
     flex-direction: column;
     align-items: center;
+    text-align: center;
     overflow: hidden;
     color: var(--font-color);
     background-color: var(--background);
@@ -57,6 +58,7 @@ body {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  margin: 1rem;
 }
   
 .form .inputFields input {
