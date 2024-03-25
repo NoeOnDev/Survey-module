@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from "../../assets/styles/verificationCodeStyles.module.css";
 
 function VerificationCodeForm() {
@@ -21,6 +21,12 @@ function VerificationCodeForm() {
             inputs[i - 1].current.focus();
         }
     };
+    
+    useEffect(() => {
+        if (inputs[0].current) {
+            inputs[0].current.focus();
+        }
+    }, [inputs]);
 
     return (
         <div className={styles.container}>

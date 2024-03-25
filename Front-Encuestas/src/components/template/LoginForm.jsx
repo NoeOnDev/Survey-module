@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../../assets/styles/authStyles.module.css';
 
 function LoginForm() {
 
     const [email, setEmail] = useState('');
+    const navigate = useNavigate();
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -24,6 +26,7 @@ function LoginForm() {
 
         if (response.ok) {
             alert(data.message);
+            navigate('/verification');
         } else {
             alert(`Error: ${data.message}`);
         }
