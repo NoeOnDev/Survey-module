@@ -53,7 +53,7 @@ class AuthController {
       });
 
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-
+      
       return done(null, token);
     } catch (error) {
       return done(error);
@@ -63,19 +63,19 @@ class AuthController {
   async findOrCreateUserLocal(req, res) {
     try {
       const { email } = req.body;
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({ where: { email: email } });
+
       const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
       if (user) {
         user.code = verificationCode;
         await user.save();
       } else {
-        const newUser = await User.create({
-          email,
+        await User.create({
+          email: email,
           code: verificationCode,
           registrationMethod: "local",
         });
-        user = newUser;
       }
 
       const mailOptions = {
@@ -87,17 +87,31 @@ class AuthController {
 
       await transporter.sendMail(mailOptions);
 
-      const token = jwt.sign(
-        { email, userId: user.id },
-        process.env.JWT_SECRET
-      );
-
       res
         .status(200)
-        .cookie("auth_token", token, { httpOnly: true, secure: true })
         .json({ message: "Verification code has been sent to your email." });
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  }
+
+  async verifyCode(req, res) {
+    try {
+        const { email, code } = req.body;
+        const user = await User.findOne({ where: { email: email } });
+
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        if (user.code !== code) {
+          return res.status(400).json({ message: "Invalid code" });
+        }
+
+        user.code = null;
+        await user.save();
+        res.status(200).json({ message: "Code verified" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
   }
 }
