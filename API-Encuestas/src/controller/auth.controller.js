@@ -53,7 +53,7 @@ class AuthController {
       });
 
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-      
+
       return done(null, token);
     } catch (error) {
       return done(error);
@@ -63,19 +63,19 @@ class AuthController {
   async findOrCreateUserLocal(req, res) {
     try {
       const { email } = req.body;
-      const user = await User.findOne({ where: { email: email } });
-
+      const user = await User.findOne({ where: { email } });
       const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
       if (user) {
         user.code = verificationCode;
         await user.save();
       } else {
-        await User.create({
-          email: email,
+        const newUser = await User.create({
+          email,
           code: verificationCode,
           registrationMethod: "local",
         });
+        user = newUser;
       }
 
       const mailOptions = {
@@ -87,8 +87,14 @@ class AuthController {
 
       await transporter.sendMail(mailOptions);
 
+      const token = jwt.sign(
+        { email, userId: user.id },
+        process.env.JWT_SECRET
+      );
+
       res
         .status(200)
+        .cookie("auth_token", token, { httpOnly: true, secure: true })
         .json({ message: "Verification code has been sent to your email." });
     } catch (error) {
       res.status(500).json({ message: error.message });

@@ -7,6 +7,7 @@ User.init(
   {
     googleId: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: true,
     },
     name: {
@@ -15,6 +16,7 @@ User.init(
     },
     email: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false,
     },
     registrationMethod: {
