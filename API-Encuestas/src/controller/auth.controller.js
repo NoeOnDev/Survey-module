@@ -87,7 +87,32 @@ class AuthController {
 
       await transporter.sendMail(mailOptions);
 
-      res.status(200).json({ message: "Verification code has been sent to your email." });
+      res
+        .status(200)
+        .json({ message: "Verification code has been sent to your email." });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+  async verifyCode(req, res) {
+    try {
+      const { email, code } = req.body;
+      const user = await User.findOne({ where: { email: email } });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      if (user.code !== code) {
+        return res
+          .status(400)
+          .json({ message: "Incorrect verification code." });
+      }
+
+      const token = jwt.sign({ id: user.id }, "your-secret-key");
+
+      res.cookie("auth_token", token, { httpOnly: true, secure: true });
+      return res.status(200).json({ message: "Verification successful." });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

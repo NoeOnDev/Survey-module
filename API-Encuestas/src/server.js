@@ -25,7 +25,7 @@ export async function startServer() {
 
         app.get("/auth/google", authController.googleAuth);
         app.get("/auth/google/callback", authController.googleAuthCallback);
-        app.post("/auth/local", authController.findOrCreateUser);
+        app.post("/auth/local", authController.findOrCreateUserLocal);
         
         app.listen(PORT);
     } catch (error) {
