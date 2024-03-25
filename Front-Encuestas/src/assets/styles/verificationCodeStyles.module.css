@@ -1,3 +1,8 @@
+:root {
+    --font-DelaGothicOne: 'Dela Gothic One', cursive;
+    --font-SpaceMono: 'Space Mono', monospace;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -12,52 +17,50 @@ body {
 }
 
 .form {
-    --black: #000000;
-    --ch-black: #141414;
-    --eer-black: #1b1b1b;
-    --night-rider: #2e2e2e;
-    --white: #ffffff;
-    --af-white: #f3f3f3;
-    --ch-white: #e1e1e1;
-    --tomato: #fa5656;
-    font-family: Helvetica, sans-serif;
-    padding: 25px;
+    --background: #d3d3d3;
+    --input-focus: #fff;
+    --font-color: #323232;
+    --font-color-sub: #666;
+    --bg-color: #fff;
+    --main-color: #323232;
+    padding: 20px;
     display: flex;
     max-width: 420px;
     flex-direction: column;
     align-items: center;
     overflow: hidden;
-    color: var(--af-white);
-    background-color: var(--black);
+    color: var(--font-color);
+    background-color: var(--background);
     border-radius: 8px;
-    position: relative;
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, .1);
-  }
+    border: 2px solid var(--main-color);
+    box-shadow: 4px 4px var(--main-color);
+}
   
-  /*----input-fields------*/
+/*----input-fields------*/
   
-  .form .inputFields {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-  }
+.form .inputFields {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
   
-  .form .inputFields input {
-    height: 2.5em;
-    width: 2.5em;
-    outline: none;
-    text-align: center;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 1.5rem;
-    color: var(--af-white);
-    border-radius: 5px;
-    border: 2.5px solid var(--eer-black);
-    background-color: var(--eer-black);
-  }
-  
-  .form .inputFields input:focus {
-    border: 1px solid var(--af-white);
-    box-shadow: inset 10px 10px 10px rgba(0, 0, 0, .15);
-    transform: scale(1.05);
-    transition: 0.5s;
-  }
+.form .inputFields input {
+  height: 40px;
+  width: 40px;
+  outline: none;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--font-color);
+  border-radius: 5px;
+  background-color: var(--bg-color);
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+  transition: all 0.3s ease;
+}
+
+/* Add focus styles */
+.form .inputFields input:focus {
+    box-shadow: 0px 0px var(--main-color);
+    transform: translate(3px, 3px);
+}
