@@ -111,6 +111,11 @@ body {
   color: #e8e8e8;
 }
 
+.oauthButton:hover:active {
+  color: #e8e8e8;
+  transform: translate(3px, 3px);
+}
+
 .oauthButton:hover::before {
   width: 100%;
 }
