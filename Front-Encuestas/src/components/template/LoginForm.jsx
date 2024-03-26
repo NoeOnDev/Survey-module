@@ -9,7 +9,6 @@ function LoginForm() {
     const [email, setEmail] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFadingOut, setIsFadingOut] = useState(false);
-    const [areAllFieldsFilled, setAreAllFieldsFilled] = useState(false);
     const inputsRefs = useRef([]);
 
     if (inputsRefs.current.length === 0) {
@@ -53,9 +52,17 @@ function LoginForm() {
             event.target.value = '';
             return;
         }
-
+    
         if (val.length === 1 && i < inputsRefs.current.length - 1) {
             inputsRefs.current[i + 1].current.focus();
+        }
+    
+        if (val.length === 1 && i === inputsRefs.current.length - 1) {
+            const arePreviousFieldsFilled = inputsRefs.current.slice(0, i).every(input => /^\d$/.test(input.current.value));
+            if (arePreviousFieldsFilled) {
+                const code = inputsRefs.current.map(input => input.current.value).join('');
+                verifyCode(email, code);
+            }
         }
     };
 
@@ -95,19 +102,6 @@ function LoginForm() {
             console.error('Error verifying code:', error);
         }
     }
-    
-
-    useEffect(() => {
-        const allFilled = inputsRefs.current.every(input => input.current?.value.length === 1);
-        setAreAllFieldsFilled(allFilled);
-    }, [inputsRefs.current.map(input => input.current?.value)]);
-
-    useEffect(() => {
-        if (areAllFieldsFilled) {
-            const code = inputsRefs.current.map(input => input.current.value).join('');
-            verifyCode(email, code);
-        }
-    }, [areAllFieldsFilled, email]);
 
     useEffect(() => {
         if (isModalOpen && inputsRefs.current[0].current) {
