@@ -26,7 +26,7 @@ class AuthController {
           return res.redirect("http://localhost:5173/");
         }
 
-        res.cookie("auth_token", token, { httpOnly: true, secure: true });
+        res.cookie("auth_token_google", token, { httpOnly: true, secure: true });
         return res.redirect("http://localhost:5173/home");
       }
     )(req, res, next);
@@ -112,7 +112,7 @@ class AuthController {
   
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
   
-      res.cookie("auth_token", token, { httpOnly: true, secure: true, sameSite: 'None' });
+      res.cookie("auth_token_local", token, { httpOnly: true, secure: true, sameSite: "none" });
   
       res.status(200).json({ message: "Code verified" });
     } catch (error) {
