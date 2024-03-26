@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import styles from '../../assets/styles/authStyles.module.css';
 import verificationStyles from "../../assets/styles/verificationCodeStyles.module.css";
 
 function LoginForm() {
-
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFadingOut, setIsFadingOut] = useState(false);
+    const [areAllFieldsFilled, setAreAllFieldsFilled] = useState(false);
     const inputsRefs = useRef([]);
+
     if (inputsRefs.current.length === 0) {
         inputsRefs.current = Array(6).fill().map((_, i) => inputsRefs.current[i] ?? React.createRef());
     }
@@ -69,6 +72,42 @@ function LoginForm() {
             setIsFadingOut(false);
         }, 500);
     };
+
+    async function verifyCode(email, code) {
+        try {
+            const response = await fetch('http://localhost:9020/auth/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, code })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                navigate('/home');
+            } else {
+                inputsRefs.current.forEach(input => {
+                    input.current.value = '';
+                });
+                console.error('Error verifying code:', data.message);
+            }
+        } catch (error) {
+            console.error('Error verifying code:', error);
+        }
+    }
+    
+
+    useEffect(() => {
+        const allFilled = inputsRefs.current.every(input => input.current?.value.length === 1);
+        setAreAllFieldsFilled(allFilled);
+    }, [inputsRefs.current.map(input => input.current?.value)]);
+
+    useEffect(() => {
+        if (areAllFieldsFilled) {
+            const code = inputsRefs.current.map(input => input.current.value).join('');
+            verifyCode(email, code);
+        }
+    }, [areAllFieldsFilled, email]);
 
     useEffect(() => {
         if (isModalOpen && inputsRefs.current[0].current) {
