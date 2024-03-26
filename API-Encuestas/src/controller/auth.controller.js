@@ -43,15 +43,20 @@ class AuthController {
 
   async findOrCreateUser(profile, done) {
     try {
-      const [user, created] = await User.findOrCreate({
-        where: { googleId: profile.id },
-        defaults: {
+      let user = await User.findOne({ where: { email: profile.emails[0].value } });
+  
+      if (user) {
+        user.googleId = profile.id;
+        user.name = user.name || profile.displayName;
+        await user.save();
+      } else {
+        user = await User.create({
+          googleId: profile.id,
           name: profile.displayName,
           email: profile.emails[0].value,
-          registrationMethod: "google",
-        },
-      });
-
+        });
+      }
+  
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
       
       return done(null, token);
@@ -74,7 +79,6 @@ class AuthController {
         await User.create({
           email: email,
           code: verificationCode,
-          registrationMethod: "local",
         });
       }
 

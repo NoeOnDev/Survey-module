@@ -19,10 +19,6 @@ User.init(
       unique: true,
       allowNull: false,
     },
-    registrationMethod: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     code : {
       type: DataTypes.STRING,
       allowNull: true,
@@ -35,15 +31,6 @@ User.init(
     paranoid: true,
     timestamps: true,
     underscored: true,
-    hooks: {
-      beforeCreate: (user) => {
-        if (user.googleId) {
-          user.registrationMethod = "google";
-        } else {
-          user.registrationMethod = "local";
-        }
-      },
-    },
   }
 );
 
