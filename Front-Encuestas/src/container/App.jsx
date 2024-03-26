@@ -1,13 +1,11 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import Login from '../pages/Login';
-import VerificationCode from '../pages/VerificationCode';
+import Auth from '../pages/Auth';
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/verification" element={<VerificationCode />} />
+                <Route path="/" element={<Auth />} />
             </Routes>
         </BrowserRouter>
     );

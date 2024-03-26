@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import styles from '../../assets/styles/authStyles.module.css';
 import verificationStyles from "../../assets/styles/verificationCodeStyles.module.css";
 
-function LoginForm() {
+function AuthForm() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -179,4 +179,4 @@ function LoginForm() {
     );
 }
 
-export default LoginForm;
+export default AuthForm;
