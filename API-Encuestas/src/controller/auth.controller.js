@@ -97,21 +97,26 @@ class AuthController {
 
   async verifyCode(req, res) {
     try {
-        const { email, code } = req.body;
-        const user = await User.findOne({ where: { email: email } });
-
-        if (!user) {
-          return res.status(404).json({ message: "User not found" });
-        }
-        if (user.code !== code) {
-          return res.status(400).json({ message: "Invalid code" });
-        }
-
-        user.code = null;
-        await user.save();
-        res.status(200).json({ message: "Code verified" });
+      const { email, code } = req.body;
+      const user = await User.findOne({ where: { email: email } });
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      if (user.code !== code) {
+        return res.status(400).json({ message: "Invalid code" });
+      }
+  
+      user.code = null;
+      await user.save();
+  
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+  
+      res.cookie("auth_token", token, { httpOnly: true, secure: true });
+  
+      res.status(200).json({ message: "Code verified" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
   }
 }

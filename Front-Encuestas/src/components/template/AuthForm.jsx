@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import styles from '../../assets/styles/authStyles.module.css';
@@ -96,6 +96,7 @@ function AuthForm() {
                 inputsRefs.current.forEach(input => {
                     input.current.value = '';
                 });
+                inputsRefs.current[0].current.focus();
                 console.error('Error verifying code:', data.message);
             }
         } catch (error) {
