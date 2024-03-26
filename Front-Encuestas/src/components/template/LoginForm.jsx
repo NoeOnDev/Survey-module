@@ -7,6 +7,7 @@ function LoginForm() {
 
     const [email, setEmail] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFadingOut, setIsFadingOut] = useState(false);
     const inputsRefs = useRef([]);
     if (inputsRefs.current.length === 0) {
         inputsRefs.current = Array(6).fill().map((_, i) => inputsRefs.current[i] ?? React.createRef());
@@ -61,6 +62,13 @@ function LoginForm() {
         }
     };
 
+    const handleCloseModal = () => {
+        setIsFadingOut(true);
+        setTimeout(() => {
+            setIsModalOpen(false);
+            setIsFadingOut(false);
+        }, 500);
+    };
 
     useEffect(() => {
         if (isModalOpen && inputsRefs.current[0].current) {
@@ -101,9 +109,9 @@ function LoginForm() {
                 </button>
             </form>
             <Modal
-                className={verificationStyles.modal}
+                className={`${verificationStyles.modal} ${isFadingOut ? verificationStyles.fadeOut : ''}`}
                 isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
+                onRequestClose={handleCloseModal}
                 shouldFocusAfterRender={true}
                 shouldReturnFocusAfterClose={true}
                 shouldCloseOnOverlayClick={true}
@@ -111,7 +119,7 @@ function LoginForm() {
                 <div className={verificationStyles.container}>
                     <button
                         className={verificationStyles.closeButton}
-                        onClick={() => setIsModalOpen(false)}
+                        onClick={handleCloseModal}
                     >
                         X
                     </button>
