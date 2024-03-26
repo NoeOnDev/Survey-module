@@ -109,6 +109,12 @@ function LoginForm() {
                 shouldCloseOnOverlayClick={true}
                 ariaHideApp={false}>
                 <div className={verificationStyles.container}>
+                    <button
+                        className={verificationStyles.closeButton}
+                        onClick={() => setIsModalOpen(false)}
+                    >
+                        X
+                    </button>
                     <form className={verificationStyles.form}>
                         <p>
                             Verification Code
