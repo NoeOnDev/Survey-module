@@ -112,7 +112,7 @@ class AuthController {
   
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
   
-      res.cookie("auth_token", token, { httpOnly: true, secure: true });
+      res.cookie("auth_token", token, { httpOnly: true, secure: true, sameSite: 'None' });
   
       res.status(200).json({ message: "Code verified" });
     } catch (error) {
