@@ -101,6 +101,7 @@ function LoginForm() {
                 </button>
             </form>
             <Modal
+                className={verificationStyles.modal}
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}
                 shouldFocusAfterRender={true}
