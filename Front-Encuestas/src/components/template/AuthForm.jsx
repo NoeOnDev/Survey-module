@@ -84,6 +84,7 @@ function AuthForm() {
         try {
             const response = await fetch('http://localhost:9020/auth/verify', {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
