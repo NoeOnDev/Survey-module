@@ -52,11 +52,11 @@ function LoginForm() {
             event.target.value = '';
             return;
         }
-    
+
         if (val.length === 1 && i < inputsRefs.current.length - 1) {
             inputsRefs.current[i + 1].current.focus();
         }
-    
+
         if (val.length === 1 && i === inputsRefs.current.length - 1) {
             const arePreviousFieldsFilled = inputsRefs.current.slice(0, i).every(input => /^\d$/.test(input.current.value));
             if (arePreviousFieldsFilled) {
@@ -103,12 +103,6 @@ function LoginForm() {
         }
     }
 
-    useEffect(() => {
-        if (isModalOpen && inputsRefs.current[0].current) {
-            inputsRefs.current[0].current.focus();
-        }
-    }, [isModalOpen]);
-
     return (
         <div className={styles.container}>
             <form action="" className={styles.form}>
@@ -145,10 +139,11 @@ function LoginForm() {
                 className={`${verificationStyles.modal} ${isFadingOut ? verificationStyles.fadeOut : ''}`}
                 isOpen={isModalOpen}
                 onRequestClose={handleCloseModal}
-                shouldFocusAfterRender={true}
+                shouldFocusAfterRender={false}
                 shouldReturnFocusAfterClose={true}
                 shouldCloseOnOverlayClick={true}
-                ariaHideApp={false}>
+                ariaHideApp={false}
+                onAfterOpen={() => inputsRefs.current[0].current.focus()}>
                 <div className={verificationStyles.container}>
                     <button
                         className={verificationStyles.closeButton}
