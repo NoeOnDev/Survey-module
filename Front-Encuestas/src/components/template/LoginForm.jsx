@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Modal from 'react-modal';
 import styles from '../../assets/styles/authStyles.module.css';
+import verificationStyles from "../../assets/styles/verificationCodeStyles.module.css";
 
 function LoginForm() {
 
     const [email, setEmail] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+    const inputs = Array(6).fill(0).map(() => useRef(null));
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -26,7 +30,7 @@ function LoginForm() {
 
         if (response.ok) {
             alert(data.message);
-            navigate('/verification');
+            setIsModalOpen(true);
         } else {
             alert(`Error: ${data.message}`);
         }
@@ -37,6 +41,30 @@ function LoginForm() {
         const googleAuthURL = 'http://localhost:9020/auth/google';
         window.location.href = googleAuthURL;
     };
+
+    const focusNext = (event, i) => {
+        const val = event.target.value;
+        if (!/^\d$/.test(val)) {
+            event.target.value = '';
+            return;
+        }
+
+        if (val.length === 1 && i < inputs.length - 1) {
+            inputs[i + 1].current.focus();
+        }
+    };
+
+    const focusPrev = (event, i) => {
+        if (event.key === 'Backspace' && event.target.value === '' && i > 0) {
+            inputs[i - 1].current.focus();
+        }
+    };
+
+    useEffect(() => {
+        if (isModalOpen && inputs[0].current) {
+            inputs[0].current.focus();
+        }
+    }, [inputs, isModalOpen]);
 
     return (
         <div className={styles.container}>
@@ -70,6 +98,32 @@ function LoginForm() {
                     Continue with Google
                 </button>
             </form>
+            <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
+                <div className={verificationStyles.container}>
+                    <form className={verificationStyles.form}>
+                        <p>
+                            Verification Code
+                        </p>
+                        <span>
+                            Enter the verification code sent to your email
+                        </span>
+                        <div className={verificationStyles.inputFields}>
+                            {inputs.map((inputRef, i) => (
+                                <input
+                                    key={i}
+                                    ref={inputRef}
+                                    maxLength="1"
+                                    type="tel"
+                                    placeholder=""
+                                    onChange={(event) => focusNext(event, i)}
+                                    onKeyDown={(event) => focusPrev(event, i)}
+                                />
+                            ))}
+                        </div>
+                        <span>Didn't receive the code?</span>
+                    </form>
+                </div>
+            </Modal>
         </div>
     );
 }
