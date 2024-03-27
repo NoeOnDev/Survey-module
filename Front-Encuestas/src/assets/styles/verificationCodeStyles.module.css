@@ -62,10 +62,13 @@ body {
 }
 
 .closeButton:hover {
-  background-color: rgb(206, 0, 0);
-  transform: translate(3px, 3px);
+  transform: scale(1.1);
 }
 
+.closeButton:active {
+  background-color: rgb(206, 0, 0);
+  transform: translate(1px, 3px);
+}
 
 .form {
     --background: #d3d3d3;

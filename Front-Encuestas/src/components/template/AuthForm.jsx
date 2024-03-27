@@ -33,7 +33,6 @@ function AuthForm() {
         const data = await response.json();
 
         if (response.ok) {
-            alert(data.message);
             setIsModalOpen(true);
         } else {
             alert(`Error: ${data.message}`);
