@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import styles from '../../assets/styles/authStyles.module.css';
@@ -7,6 +7,7 @@ import verificationStyles from "../../assets/styles/verificationCodeStyles.modul
 function AuthForm() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
+    const [counter, setCounter] = useState(60);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFadingOut, setIsFadingOut] = useState(false);
     const inputsRefs = useRef([]);
@@ -104,6 +105,19 @@ function AuthForm() {
         }
     }
 
+    useEffect(() => {
+        if (counter > 0) {
+            const timer = setTimeout(() => setCounter(counter - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [counter]);
+
+    const handleResendClick = () => {
+        if (counter === 0) {
+            setCounter(60);
+        }
+    };
+
     return (
         <div className={styles.container}>
             <form action="" className={styles.form}>
@@ -157,7 +171,7 @@ function AuthForm() {
                             Verification Code
                         </p>
                         <span>
-                            Enter the verification code sent to your email
+                            Enter the verification code sent to {email}
                         </span>
                         <div className={verificationStyles.inputFields}>
                             {inputsRefs.current.map((inputRef, i) => (
@@ -172,7 +186,11 @@ function AuthForm() {
                                 />
                             ))}
                         </div>
-                        <span>Didn't receive the code?</span>
+                        <span>Didn't receive the verification code?</span>
+                        <button className={verificationStyles.buttonResend}
+                            onClick={handleResendClick} disabled={counter > 0}>
+                            {counter > 0 ? `Resend available in ${counter} seconds` : 'Resend code'}
+                        </button>
                     </form>
                 </div>
             </Modal>

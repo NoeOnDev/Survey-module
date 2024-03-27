@@ -70,6 +70,23 @@ body {
   transform: translate(1px, 3px);
 }
 
+.buttonResend {
+  outline: none;
+  border: none;
+  background-color: var(--background);
+  font-family: var(--font-SpaceMono);
+  color: var(--font-color-sub);
+  font-weight: 900;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.buttonResend:disabled {
+  background-color: var(--background);
+  color: var(--font-color-sub);
+  cursor: not-allowed;
+}
+
 .form {
     --background: #d3d3d3;
     --input-focus: #fff;
