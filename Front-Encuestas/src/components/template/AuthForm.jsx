@@ -70,8 +70,16 @@ function AuthForm() {
 
     const handleGoogleLogin = (event) => {
         event.preventDefault();
-        const googleAuthURL = 'http://localhost:9020/auth/google';
-        window.location.href = googleAuthURL;
+
+        setIsLoading(true);
+
+        try {
+            const googleAuthURL = 'http://localhost:9020/auth/google';
+            window.location.href = googleAuthURL;
+        } catch (error) {
+            console.error('Error:', error);
+            setIsLoading(false);
+        }
     };
 
     const handleLocalLogin = async (event) => {
