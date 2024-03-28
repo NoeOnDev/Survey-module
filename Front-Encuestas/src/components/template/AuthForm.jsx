@@ -23,20 +23,24 @@ function AuthForm() {
     const handleLocalLogin = async (event) => {
         event.preventDefault();
 
-        const response = await fetch('http://localhost:9020/auth/local', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email })
-        });
+        try {
+            const response = await fetch('http://localhost:9020/auth/local', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.ok) {
-            setIsModalOpen(true);
-        } else {
-            alert(`Error: ${data.message}`);
+            if (response.ok) {
+                setIsModalOpen(true);
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
         }
     };
 
