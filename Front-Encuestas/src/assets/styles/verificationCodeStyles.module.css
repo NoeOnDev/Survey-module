@@ -76,7 +76,7 @@ body {
   background-color: var(--background);
   font-family: var(--font-SpaceMono);
   color: var(--font-color-sub);
-  font-weight: 900;
+  font-weight: 1000;
   font-size: 17px;
   cursor: pointer;
 }
@@ -112,7 +112,7 @@ body {
 .form > p {
   font-family: var(--font-DelaGothicOne);
   color: var(--font-color);
-  font-weight: 700;
+  font-weight: 900;
   font-size: 25px;
   margin-bottom: -10px;
 }
