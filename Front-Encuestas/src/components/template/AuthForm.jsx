@@ -71,10 +71,9 @@ function AuthForm() {
     const handleGoogleLogin = (event) => {
         event.preventDefault();
 
-        setIsLoading(true);
-
         try {
             const googleAuthURL = 'http://localhost:9020/auth/google';
+            setIsLoading(true);
             window.location.href = googleAuthURL;
         } catch (error) {
             console.error('Error:', error);
@@ -84,9 +83,9 @@ function AuthForm() {
 
     const handleLocalLogin = async (event) => {
         event.preventDefault();
-
+    
         setIsLoading(true);
-
+    
         try {
             const response = await fetch('http://localhost:9020/auth/local', {
                 method: 'POST',
@@ -95,16 +94,17 @@ function AuthForm() {
                 },
                 body: JSON.stringify({ email })
             });
-
+    
             const data = await response.json();
-
+    
             if (response.ok) {
                 setTimeout(() => {
-                    setIsLoading(false);
                     setIsModalOpen(true);
+                    setIsLoading(false);
                 }, 1000);
             } else {
                 alert(`Error: ${data.message}`);
+                setIsLoading(false);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -113,6 +113,9 @@ function AuthForm() {
     };
 
     async function verifyCode(email, code) {
+
+        setIsLoading(true);
+
         try {
             const response = await fetch('http://localhost:9020/auth/verify', {
                 method: 'POST',
@@ -124,16 +127,20 @@ function AuthForm() {
             });
             const data = await response.json();
             if (response.ok) {
-                navigate('/home');
+                setTimeout(() => {
+                    navigate('/home');
+                }, 1000);
             } else {
                 inputsRefs.current.forEach(input => {
                     input.current.value = '';
                 });
                 inputsRefs.current[0].current.focus();
                 console.error('Error verifying code:', data.message);
+                setIsLoading(false);
             }
         } catch (error) {
             console.error('Error verifying code:', error);
+            setIsLoading(false);
         }
     }
 
