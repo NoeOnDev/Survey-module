@@ -141,3 +141,64 @@ body {
 }
 
 /*Loarder styles global*/
+
+.containerLoader {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  background: rgba(253, 253, 253, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.loader {
+  border-radius: 50%;
+  border-top: 16px rgba(0,0,0,0.75) solid;
+  border-left: 16px rgba(0,0,0,0.25) solid;
+  border-bottom: 16px rgba(0,0,0,0.25) solid;
+  border-right: 16px rgba(0,0,0,0.25) solid;
+  animation: spSlices 1s infinite linear;
+}
+
+@keyframes spSlices {
+  0% {
+    border-top: 16px rgba(0,0,0,0.75) solid;
+    border-right: 16px rgba(0,0,0,0.25) solid;
+    border-bottom: 16px rgba(0,0,0,0.25) solid;
+    border-left: 16px rgba(0,0,0,0.25) solid;
+  }
+
+  25% {
+    border-top: 16px rgba(0,0,0,0.25) solid;
+    border-right: 16px rgba(0,0,0,0.75) solid;
+    border-bottom: 16px rgba(0,0,0,0.25) solid;
+    border-left: 16px rgba(0,0,0,0.25) solid;
+  }
+
+  50% {
+    border-top: 16px rgba(0,0,0,0.25) solid;
+    border-right: 16px rgba(0,0,0,0.25) solid;
+    border-bottom: 16px rgba(0,0,0,0.75) solid;
+    border-left: 16px rgba(0,0,0,0.25) solid;
+  }
+
+  75% {
+    border-top: 16px rgba(0,0,0,0.25) solid;
+    border-right: 16px rgba(0,0,0,0.25) solid;
+    border-bottom: 16px rgba(0,0,0,0.25) solid;
+    border-left: 16px rgba(0,0,0,0.75) solid;
+  }
+
+  100% {
+    border-top: 16px rgba(0,0,0,0.75) solid;
+    border-right: 16px rgba(0,0,0,0.25) solid;
+    border-bottom: 16px rgba(0,0,0,0.25) solid;
+    border-left: 16px rgba(0,0,0,0.25) solid;
+  }
+}
+
+

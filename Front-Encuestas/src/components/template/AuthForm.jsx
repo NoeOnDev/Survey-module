@@ -8,6 +8,7 @@ function AuthForm() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [counter, setCounter] = useState(60);
+    const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFadingOut, setIsFadingOut] = useState(false);
     const inputsRefs = useRef([]);
@@ -15,40 +16,6 @@ function AuthForm() {
     if (inputsRefs.current.length === 0) {
         inputsRefs.current = Array(6).fill().map((_, i) => inputsRefs.current[i] ?? React.createRef());
     }
-
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-    };
-
-    const handleLocalLogin = async (event) => {
-        event.preventDefault();
-
-        try {
-            const response = await fetch('http://localhost:9020/auth/local', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setIsModalOpen(true);
-            } else {
-                alert(`Error: ${data.message}`);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    const handleGoogleLogin = (event) => {
-        event.preventDefault();
-        const googleAuthURL = 'http://localhost:9020/auth/google';
-        window.location.href = googleAuthURL;
-    };
 
     const focusNext = (event, i) => {
         const val = event.target.value;
@@ -84,6 +51,59 @@ function AuthForm() {
         }, 500);
     };
 
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    useEffect(() => {
+        if (counter > 0) {
+            const timer = setTimeout(() => setCounter(counter - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [counter]);
+
+    const handleResendClick = () => {
+        if (counter === 0) {
+            setCounter(60);
+        }
+    };
+
+    const handleGoogleLogin = (event) => {
+        event.preventDefault();
+        const googleAuthURL = 'http://localhost:9020/auth/google';
+        window.location.href = googleAuthURL;
+    };
+
+    const handleLocalLogin = async (event) => {
+        event.preventDefault();
+
+        setIsLoading(true);
+
+        try {
+            const response = await fetch('http://localhost:9020/auth/local', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setTimeout(() => {
+                    setIsLoading(false);
+                    setIsModalOpen(true);
+                }, 1000);
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setIsLoading(false);
+        }
+    };
+
     async function verifyCode(email, code) {
         try {
             const response = await fetch('http://localhost:9020/auth/verify', {
@@ -109,21 +129,11 @@ function AuthForm() {
         }
     }
 
-    useEffect(() => {
-        if (counter > 0) {
-            const timer = setTimeout(() => setCounter(counter - 1), 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [counter]);
-
-    const handleResendClick = () => {
-        if (counter === 0) {
-            setCounter(60);
-        }
-    };
-
     return (
         <div className={styles.container}>
+            {isLoading && <div className={styles.containerLoader}>
+                <div className={styles.loader}></div>
+            </div>}
             <form action="" className={styles.form}>
                 <p>
                     Welcome
