@@ -67,38 +67,40 @@ class AuthController {
     }
   }
 
+  async sendVerificationEmail(user, email, res) {
+    const verificationCode = generateCode();
+    user.code = verificationCode;
+    await user.save();
+
+    try {
+      await sendEmail(transporter, email, verificationCode);
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      return res
+        .status(500)
+        .json({ message: "Failed to send verification code" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Verification code has been sent to your email." });
+  }
+
   async findOrCreateUserLocal(req, res) {
     try {
       const { email } = req.body;
-      const user = await User.findOne({ where: { email: email } });
+      let user = await User.findOne({ where: { email: email } });
 
-      const verificationCode = generateCode();
-
-      if (user) {
-        user.code = verificationCode;
-        await user.save();
-      } else {
-        await User.create({
+      if (!user) {
+        user = await User.create({
           email: email,
-          code: verificationCode,
         });
       }
 
-      try {
-        await sendEmail(transporter, email, verificationCode);
-      } catch (error) {
-        console.error("Failed to send email:", error);
-        return res
-          .status(500)
-          .json({ message: "Failed to send verification code" });
-      }
-
-      res
-        .status(200)
-        .json({ message: "Verification code has been sent to your email." });
+      return this.sendVerificationEmail(user, email, res);
     } catch (error) {
       console.error("Failed to create or find user:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   }
 
@@ -111,25 +113,10 @@ class AuthController {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const verificationCode = generateCode();
-      user.code = verificationCode;
-      await user.save();
-
-      try {
-        await sendEmail(transporter, email, verificationCode);
-      } catch (error) {
-        console.error("Failed to send email:", error);
-        return res
-          .status(500)
-          .json({ message: "Failed to send verification code" });
-      }
-
-      res
-        .status(200)
-        .json({ message: "Verification code has been resent to your email." });
+      return this.sendVerificationEmail(user, email, res);
     } catch (error) {
       console.error("Failed to resend code:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   }
 
