@@ -27,13 +27,13 @@ class AuthController {
         if (!user) {
           return res.redirect("http://localhost:5173/");
         }
-  
+
         generateTokenAndSetCookie(user, res);
         return res.redirect("http://localhost:5173/home");
       }
     )(req, res, next);
   }
-  
+
   async findUserById(id) {
     try {
       const user = await User.findByPk(id);
@@ -42,13 +42,13 @@ class AuthController {
       throw error;
     }
   }
-  
+
   async findOrCreateUser(profile, done) {
     try {
       let user = await User.findOne({
         where: { email: profile.emails[0].value },
       });
-  
+
       if (user) {
         user.googleId = profile.id;
         user.name = user.name || profile.displayName;
@@ -60,7 +60,7 @@ class AuthController {
           email: profile.emails[0].value,
         });
       }
-  
+
       return done(null, user);
     } catch (error) {
       return done(error);
@@ -84,13 +84,21 @@ class AuthController {
         });
       }
 
-      await sendEmail(transporter, email, verificationCode);
+      try {
+        await sendEmail(transporter, email, verificationCode);
+      } catch (error) {
+        console.error("Failed to send email:", error);
+        return res
+          .status(500)
+          .json({ message: "Failed to send verification code" });
+      }
 
       res
         .status(200)
         .json({ message: "Verification code has been sent to your email." });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      console.error("Failed to create or find user:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 
@@ -107,13 +115,21 @@ class AuthController {
       user.code = verificationCode;
       await user.save();
 
-      await sendEmail(transporter, email, verificationCode);
+      try {
+        await sendEmail(transporter, email, verificationCode);
+      } catch (error) {
+        console.error("Failed to send email:", error);
+        return res
+          .status(500)
+          .json({ message: "Failed to send verification code" });
+      }
 
       res
         .status(200)
         .json({ message: "Verification code has been resent to your email." });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      console.error("Failed to resend code:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 

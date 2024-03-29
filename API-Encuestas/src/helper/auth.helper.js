@@ -12,5 +12,9 @@ export function generateToken(id) {
 
 export function generateTokenAndSetCookie(user, res) {
   const token = generateToken(user.id);
-  res.cookie("auth_token", token, { httpOnly: true, secure: true });
+  res.cookie("auth_token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+  });
 }
