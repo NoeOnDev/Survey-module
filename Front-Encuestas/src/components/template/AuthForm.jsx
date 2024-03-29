@@ -8,6 +8,7 @@ function AuthForm() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [counter, setCounter] = useState(60);
+    const [counterId, setCounterId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFadingOut, setIsFadingOut] = useState(false);
@@ -51,21 +52,31 @@ function AuthForm() {
         }, 500);
     };
 
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
+    const startCounter = () => {
+        setCounter(60);
+        const id = setInterval(() => {
+            setCounter((counter) => {
+                if (counter > 1) {
+                    return counter - 1;
+                } else {
+                    clearInterval(id);
+                    return 0;
+                }
+            });
+        }, 1000);
+        setCounterId(id);
     };
 
     useEffect(() => {
-        if (counter > 0) {
-            const timer = setTimeout(() => setCounter(counter - 1), 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [counter]);
+        return () => {
+            if (counterId) {
+                clearInterval(counterId);
+            }
+        };
+    }, [counterId]);
 
-    const handleResendClick = () => {
-        if (counter === 0) {
-            setCounter(60);
-        }
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
     };
 
     const handleGoogleLogin = (event) => {
@@ -83,9 +94,9 @@ function AuthForm() {
 
     const handleLocalLogin = async (event) => {
         event.preventDefault();
-    
+
         setIsLoading(true);
-    
+
         try {
             const response = await fetch('http://localhost:9020/auth/local', {
                 method: 'POST',
@@ -94,13 +105,14 @@ function AuthForm() {
                 },
                 body: JSON.stringify({ email })
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 setTimeout(() => {
                     setIsModalOpen(true);
                     setIsLoading(false);
+                    startCounter();
                 }, 1000);
             } else {
                 alert(`Error: ${data.message}`);
@@ -143,6 +155,12 @@ function AuthForm() {
             setIsLoading(false);
         }
     }
+
+    const handleResendClick = () => {
+        if (counter === 0) {
+            startCounter();
+        }
+    };
 
     return (
         <div className={styles.container}>
