@@ -2,7 +2,10 @@ import passport from "passport";
 import User from "../model/user.model.js";
 import { transporter } from "../config/nodemailer.config.js";
 import { sendEmail } from "../helper/transporter.helper.js";
-import { generateCode, generateToken } from "../helper/auth.helper.js";
+import {
+  generateCode,
+  generateTokenAndSetCookie,
+} from "../helper/auth.helper.js";
 
 class AuthController {
   async googleAuth(req, res, next) {
@@ -17,20 +20,20 @@ class AuthController {
     passport.authenticate(
       "google",
       { failureRedirect: "http://localhost:5173/" },
-      function (err, token, info) {
+      function (err, user, info) {
         if (err) {
           return next(err);
         }
-        if (!token) {
+        if (!user) {
           return res.redirect("http://localhost:5173/");
         }
-
-        res.cookie("auth_token", token, { httpOnly: true, secure: true });
+  
+        generateTokenAndSetCookie(user, res);
         return res.redirect("http://localhost:5173/home");
       }
     )(req, res, next);
   }
-
+  
   async findUserById(id) {
     try {
       const user = await User.findByPk(id);
@@ -39,13 +42,13 @@ class AuthController {
       throw error;
     }
   }
-
+  
   async findOrCreateUser(profile, done) {
     try {
       let user = await User.findOne({
         where: { email: profile.emails[0].value },
       });
-
+  
       if (user) {
         user.googleId = profile.id;
         user.name = user.name || profile.displayName;
@@ -57,10 +60,8 @@ class AuthController {
           email: profile.emails[0].value,
         });
       }
-
-      const token = generateToken(user.id);
-
-      return done(null, token);
+  
+      return done(null, user);
     } catch (error) {
       return done(error);
     }
@@ -131,9 +132,7 @@ class AuthController {
       user.code = null;
       await user.save();
 
-      const token = generateToken(user.id);
-
-      res.cookie("auth_token", token, { httpOnly: true, secure: true });
+      generateTokenAndSetCookie(user, res);
       res.status(200).json({ message: "Code verified" });
     } catch (error) {
       res.status(500).json({ message: error.message });
