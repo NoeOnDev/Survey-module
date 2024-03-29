@@ -76,7 +76,7 @@ body {
   background-color: var(--background);
   font-family: var(--font-SpaceMono);
   color: var(--font-color-sub);
-  font-weight: 1000;
+  font-weight: 900;
   font-size: 17px;
   cursor: pointer;
 }
