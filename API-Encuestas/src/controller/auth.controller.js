@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import passport from "passport";
 import User from "../model/user.model.js";
 import { transporter } from "../config/nodemailer.config.js";
+import { sendEmail } from "../helper/transporter.helper.js";
 
 process.loadEnvFile();
 
@@ -82,14 +83,7 @@ class AuthController {
         });
       }
 
-      const mailOptions = {
-        from: "noeon",
-        to: email,
-        subject: "Verification code",
-        text: `Your verification code is ${verificationCode}`,
-      };
-
-      await transporter.sendMail(mailOptions);
+      await sendEmail(transporter, email, verificationCode);
 
       res
         .status(200)
@@ -112,14 +106,7 @@ class AuthController {
       user.code = verificationCode;
       await user.save();
   
-      const mailOptions = {
-        from: "noeon",
-        to: email,
-        subject: "Verification code",
-        text: `Your verification code is ${verificationCode}`,
-      };
-  
-      await transporter.sendMail(mailOptions);
+      await sendEmail(transporter, email, verificationCode);
   
       res
         .status(200)
