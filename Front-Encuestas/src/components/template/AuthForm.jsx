@@ -94,7 +94,6 @@ function AuthForm() {
                 },
                 body: JSON.stringify({ email })
             });
-            
     
             const data = await response.json();
     
