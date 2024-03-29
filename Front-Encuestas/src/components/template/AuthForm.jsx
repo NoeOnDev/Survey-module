@@ -7,7 +7,7 @@ import verificationStyles from "../../assets/styles/verificationCodeStyles.modul
 function AuthForm() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
-    const [counter, setCounter] = useState(60);
+    const [counter, setCounter] = useState(30);
     const [counterId, setCounterId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +53,7 @@ function AuthForm() {
     };
 
     const startCounter = () => {
-        setCounter(60);
+        setCounter(30);
         const id = setInterval(() => {
             setCounter((counter) => {
                 if (counter > 1) {
@@ -156,9 +156,33 @@ function AuthForm() {
         }
     }
 
-    const handleResendClick = () => {
+    const handleResendCode = async (event) => {
+        event.preventDefault();
         if (counter === 0) {
-            startCounter();
+            setIsLoading(true);
+
+            try {
+                const response = await fetch('http://localhost:9020/auth/local', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    startCounter();
+                    setIsLoading(false);
+                } else {
+                    alert(`Error: ${data.message}`);
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                setIsLoading(false);
+            }
         }
     };
 
@@ -234,8 +258,8 @@ function AuthForm() {
                             ))}
                         </div>
                         <span>Didn't receive the verification code?</span>
-                        <button className={verificationStyles.buttonResend}
-                            onClick={handleResendClick} disabled={counter > 0}>
+                        <button type="button" className={verificationStyles.buttonResend}
+                            onClick={handleResendCode} disabled={counter > 0}>
                             {counter > 0 ? `Resend available in ${counter} seconds` : 'Resend code'}
                         </button>
                     </form>
