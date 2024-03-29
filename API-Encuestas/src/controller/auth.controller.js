@@ -1,11 +1,8 @@
-import jwt from "jsonwebtoken";
 import passport from "passport";
 import User from "../model/user.model.js";
 import { transporter } from "../config/nodemailer.config.js";
 import { sendEmail } from "../helper/transporter.helper.js";
-import { generateCode } from "../helper/auth.helper.js";
-
-process.loadEnvFile();
+import { generateCode, generateToken } from "../helper/auth.helper.js";
 
 class AuthController {
   async googleAuth(req, res, next) {
@@ -28,7 +25,7 @@ class AuthController {
           return res.redirect("http://localhost:5173/");
         }
 
-        res.cookie("auth_token", token, { httpOnly: true, secure: true});
+        res.cookie("auth_token", token, { httpOnly: true, secure: true });
         return res.redirect("http://localhost:5173/home");
       }
     )(req, res, next);
@@ -61,7 +58,7 @@ class AuthController {
         });
       }
 
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+      const token = generateToken(user.id);
 
       return done(null, token);
     } catch (error) {
@@ -134,7 +131,7 @@ class AuthController {
       user.code = null;
       await user.save();
 
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+      const token = generateToken(user.id);
 
       res.cookie("auth_token", token, { httpOnly: true, secure: true });
       res.status(200).json({ message: "Code verified" });
