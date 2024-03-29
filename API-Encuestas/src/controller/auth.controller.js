@@ -3,6 +3,7 @@ import passport from "passport";
 import User from "../model/user.model.js";
 import { transporter } from "../config/nodemailer.config.js";
 import { sendEmail } from "../helper/transporter.helper.js";
+import { generateCode } from "../helper/auth.helper.js";
 
 process.loadEnvFile();
 
@@ -27,7 +28,10 @@ class AuthController {
           return res.redirect("http://localhost:5173/");
         }
 
-        res.cookie("auth_token_google", token, { httpOnly: true, secure: true });
+        res.cookie("auth_token_google", token, {
+          httpOnly: true,
+          secure: true,
+        });
         return res.redirect("http://localhost:5173/home");
       }
     )(req, res, next);
@@ -44,8 +48,10 @@ class AuthController {
 
   async findOrCreateUser(profile, done) {
     try {
-      let user = await User.findOne({ where: { email: profile.emails[0].value } });
-  
+      let user = await User.findOne({
+        where: { email: profile.emails[0].value },
+      });
+
       if (user) {
         user.googleId = profile.id;
         user.name = user.name || profile.displayName;
@@ -57,9 +63,9 @@ class AuthController {
           email: profile.emails[0].value,
         });
       }
-  
+
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-      
+
       return done(null, token);
     } catch (error) {
       return done(error);
@@ -71,7 +77,7 @@ class AuthController {
       const { email } = req.body;
       const user = await User.findOne({ where: { email: email } });
 
-      const verificationCode = Math.floor(100000 + Math.random() * 900000);
+      const verificationCode = generateCode();
 
       if (user) {
         user.code = verificationCode;
@@ -97,17 +103,17 @@ class AuthController {
     try {
       const { email } = req.body;
       const user = await User.findOne({ where: { email: email } });
-  
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-  
-      const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+      const verificationCode = generateCode();
       user.code = verificationCode;
       await user.save();
-  
+
       await sendEmail(transporter, email, verificationCode);
-  
+
       res
         .status(200)
         .json({ message: "Verification code has been resent to your email." });
@@ -120,21 +126,21 @@ class AuthController {
     try {
       const { email, code } = req.body;
       const user = await User.findOne({ where: { email: email } });
-  
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
       if (user.code !== code) {
         return res.status(400).json({ message: "Invalid code" });
       }
-  
+
       user.code = null;
       await user.save();
-  
+
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-  
+
       res.cookie("auth_token_local", token, { httpOnly: true, secure: true });
-  
+
       res.status(200).json({ message: "Code verified" });
     } catch (error) {
       res.status(500).json({ message: error.message });
