@@ -99,6 +99,36 @@ class AuthController {
     }
   }
 
+  async resendCode(req, res) {
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ where: { email: email } });
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      const verificationCode = Math.floor(100000 + Math.random() * 900000);
+      user.code = verificationCode;
+      await user.save();
+  
+      const mailOptions = {
+        from: "noeon",
+        to: email,
+        subject: "Verification code",
+        text: `Your verification code is ${verificationCode}`,
+      };
+  
+      await transporter.sendMail(mailOptions);
+  
+      res
+        .status(200)
+        .json({ message: "Verification code has been resent to your email." });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
   async verifyCode(req, res) {
     try {
       const { email, code } = req.body;
