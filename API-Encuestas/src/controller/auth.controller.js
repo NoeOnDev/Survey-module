@@ -119,13 +119,18 @@ class AuthController {
   }
 
   async sendVerificationEmail(email, code, res, next) {
-    try {
-      await sendEmail(transporter, email, code);
-      res.status(200).json({ message: "Verification code has been sent to your email." });
-    } catch (error) {
-      console.error("Failed to send email:", error);
-      next(new Error("Failed to send verification code"));
+    let attempts = 3;
+    while (attempts > 0) {
+      try {
+        await sendEmail(transporter, email, code);
+        res.status(200).json({ message: "Verification code has been sent to your email." });
+        return;
+      } catch (error) {
+        attempts--;
+        console.error(`Failed to send email, attempts left: ${attempts}`, error);
+      }
     }
+    res.status(500).json({ message: "Failed to send verification code after several attempts." });
   }
 
   async verifyCode(req, res) {
