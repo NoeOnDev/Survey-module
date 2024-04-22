@@ -8,13 +8,17 @@ class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
+        this.corsOptions = {
+            origin: process.env.CORS_ORIGIN,
+            credentials: true,
+        }
         this.config();
         this.routes();
     }
 
     config() {
         this.app.use(morgan("dev"));
-        this.app.use(cors());
+        this.app.use(cors(this.corsOptions));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
     }
@@ -22,7 +26,9 @@ class Server {
     routes() {}
 
     start() {
-        this.app.listen(this.port);
+        this.app.listen(this.port, () => {
+            console.log(`Server running on port ${this.port}`);
+        });
     }
 }
 
