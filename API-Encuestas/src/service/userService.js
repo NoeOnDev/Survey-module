@@ -8,7 +8,7 @@ class UserService {
         try {
             const existingUser = await User.findOne({ where: { email: user.email } });
             if (existingUser) {
-                throw new CustomError(400, 'User with this email already exists');
+                throw new CustomError(400, 'User with this email already exists', 'USER_ALREADY_EXISTS', { email: user.email });
             }
 
             return await User.create(user);
@@ -16,7 +16,7 @@ class UserService {
             if (error instanceof CustomError) {
                 throw error;
             } else {
-                throw new CustomError(500, 'Error creating user');
+                throw new CustomError(500, 'Error creating user', 'INTERNAL_ERROR', { originalError: error.message });
             }
         }
     }
