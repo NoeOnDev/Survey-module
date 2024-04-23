@@ -6,12 +6,12 @@ class User extends Model {}
 User.init({
   googleId: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     unique: true,
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   email: {
     type: DataTypes.STRING,
@@ -23,7 +23,7 @@ User.init({
   },
   code: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
   sequelize,
