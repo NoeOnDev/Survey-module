@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import { connectDB, syncDB } from "./database/database.js";
 
 process.loadEnvFile();
 
@@ -25,10 +26,13 @@ class Server {
 
     routes() {}
 
-    start() {
+    async start() {
         this.app.listen(this.port, () => {
             console.log(`Server running on http://localhost:${this.port}`);
         });
+
+        await connectDB();
+        await syncDB();
     }
 }
 
