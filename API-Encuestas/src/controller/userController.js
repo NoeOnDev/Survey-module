@@ -5,7 +5,7 @@ class UserController {
 
     async getUsers(req, res) {
         const users = await userService.getUsers();
-        res.json(users);
+        res.status(200).json(users);
     }
 }
 
