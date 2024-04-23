@@ -1,10 +1,24 @@
 import User from "../model/user.js";
+import CustomError from "../helper/customError.js";
 
 class UserService {
     constructor() {}
 
-    async getUsers() {
-        return await User.findAll();
+    async createUser(user) {
+        try {
+            const existingUser = await User.findOne({ where: { email: user.email } });
+            if (existingUser) {
+                throw new CustomError(400, 'User with this email already exists');
+            }
+
+            return await User.create(user);
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            } else {
+                throw new CustomError(500, 'Error creating user');
+            }
+        }
     }
 }
 
