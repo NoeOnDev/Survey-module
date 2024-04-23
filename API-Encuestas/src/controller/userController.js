@@ -5,8 +5,8 @@ class UserController {
 
     async getUsers(req, res) {
         const users = await userService.getUsers();
-        res.status(200).json(users);
+        res.json(users);
     }
 }
 
-export default new UserController;
+export default new UserController();

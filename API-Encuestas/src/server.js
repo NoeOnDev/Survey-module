@@ -1,9 +1,10 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import userRoutes from "./routes/userRoutes.js";
 import { connectDB, syncDB } from "./database/database.js";
-import User from "./model/user.js";
+import userRoutes from "./routes/userRoutes.js";
+import errorHandling from "./middleware/errorHandling.js";
+import "./model/user.js";
 
 process.loadEnvFile();
 
@@ -28,6 +29,8 @@ class Server {
 
     routes() {
         this.app.use("/api", userRoutes);
+
+        this.app.use(errorHandling());
     }
 
     async start() {
