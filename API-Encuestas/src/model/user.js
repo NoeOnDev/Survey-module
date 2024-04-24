@@ -24,6 +24,9 @@ User.init({
   code: {
     type: DataTypes.STRING,
     allowNull: true,
+    validate: {
+      len: [6, 6],
+    },
   },
 }, {
   sequelize,
