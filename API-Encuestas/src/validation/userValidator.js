@@ -3,6 +3,7 @@ import CustomError from "../helper/customError.js";
 
 export const validateUser = [
   check("email")
+    .trim()
     .isEmail()
     .withMessage("Must be a valid email")
     .normalizeEmail(),
