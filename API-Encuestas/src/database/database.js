@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize";
+import initializeUserModel from "../model/userModel.js";
 
 process.loadEnvFile();
 
@@ -10,6 +11,8 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   dialect: "postgres",
   logging: false,
 });
+
+const User = initializeUserModel(sequelize);
 
 async function connectDB() {
   try {
@@ -29,4 +32,4 @@ async function syncDB() {
   }
 }
 
-export { sequelize, connectDB, syncDB };
+export { sequelize, User, connectDB, syncDB };

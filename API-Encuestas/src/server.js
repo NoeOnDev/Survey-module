@@ -2,7 +2,6 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import { connectDB, syncDB } from "./database/database.js";
-import "./model/userModel.js";
 
 process.loadEnvFile();
 

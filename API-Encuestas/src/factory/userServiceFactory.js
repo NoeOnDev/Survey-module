@@ -1,4 +1,4 @@
-import User from "../model/userModel.js";
+import { User } from "../database/database.js";
 import CustomError from "../helper/customErrorHelper.js";
 import codeGeneratorHelper from "../helper/codeGeneratorHelper.js";
 import emailService from "./emailServiceFactory.js";
