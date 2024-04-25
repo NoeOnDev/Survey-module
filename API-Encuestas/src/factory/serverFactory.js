@@ -1,4 +1,4 @@
-import userRoutes from "../routes/userRoutes.js";
+import userRoutes from "./userRoutesFactory.js";
 import errorHandling from "../middleware/errorHandlingMiddleware.js";
 import Server from "../server.js";
 
