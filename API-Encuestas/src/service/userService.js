@@ -10,7 +10,9 @@ class UserService {
     try {
       const verificationCode = this.codeGenerator.generate();
 
-      let existingUser = await this.userModel.findOne({ where: { email: email } });
+      let existingUser = await this.userModel.findOne({
+        where: { email: email },
+      });
       if (existingUser) {
         existingUser.code = verificationCode;
         await existingUser.save();
@@ -26,9 +28,14 @@ class UserService {
       if (error instanceof this.customError) {
         throw error;
       } else {
-        throw new this.customError(500, "Error creating user", "INTERNAL_ERROR", {
-          originalError: error.message,
-        });
+        throw new this.customError(
+          500,
+          "Error creating user",
+          "INTERNAL_ERROR",
+          {
+            originalError: error.message,
+          }
+        );
       }
     }
   }

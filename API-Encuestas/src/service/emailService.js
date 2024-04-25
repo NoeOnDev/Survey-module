@@ -1,9 +1,9 @@
-import transporter from "../config/transporterConfig.js";
-
 process.loadEnvFile();
 
 class EmailService {
-  constructor() {}
+  constructor(transporter) {
+    this.transporter = transporter;
+  }
 
   async sendVerificationEmail(email, verificationCode) {
     const mailOptions = {
@@ -12,8 +12,8 @@ class EmailService {
       subject: "Verification code",
       text: `Your verification code is ${verificationCode}`,
     };
-    await transporter.sendMail(mailOptions);
+    await this.transporter.sendMail(mailOptions);
   }
 }
 
-export default new EmailService();
+export default EmailService;
