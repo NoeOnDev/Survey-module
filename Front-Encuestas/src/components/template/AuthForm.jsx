@@ -162,7 +162,7 @@ function AuthForm() {
             setIsLoading(true);
 
             try {
-                const response = await fetch('http://localhost:9020/auth/resend', {
+                const response = await fetch('http://localhost:9020/api/users/resend', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
