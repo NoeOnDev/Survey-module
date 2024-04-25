@@ -9,6 +9,11 @@ const router = Router();
 
 router.post("/users", validateUser, userController.createUser);
 router.post(
+  "/users/resend",
+  validateUser,
+  userController.resendVerificationCode
+);
+router.post(
   "/users/verify",
   validateUserVerification,
   userController.verifyUser

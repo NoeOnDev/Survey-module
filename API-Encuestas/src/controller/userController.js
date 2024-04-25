@@ -15,6 +15,19 @@ class UserController {
     }
   }
 
+  async resendVerificationCode(req, res, next) {
+    try {
+      const { email } = req.body;
+      const user = await userService.resendVerificationCode(email);
+      res.status(200).json({
+        status: "success",
+        data: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async verifyUser(req, res, next) {
     try {
       const { email, code } = req.body;
