@@ -5,12 +5,12 @@ process.loadEnvFile();
 class EmailService {
     constructor() {}
 
-    async sendVerificationEmail(email, code) {
+    async sendVerificationEmail(email, verificationCode) {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
             subject: "Verification code",
-            text: `Your verification code is ${code}`,
+            text: `Your verification code is ${verificationCode}`,
         };
         await transporter.sendMail(mailOptions);
     }

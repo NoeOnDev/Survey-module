@@ -1,5 +1,7 @@
 import User from "../model/userModel.js";
 import CustomError from "../helper/customErrorHelper.js";
+import codeGeneratorHelper from "../helper/codeGeneratorHelper.js";
+import emailService from "./emailService.js";
 
 class UserService {
   constructor() {}
@@ -15,6 +17,12 @@ class UserService {
           { email: user.email }
         );
       }
+
+      const verificationCode = codeGeneratorHelper.generate();
+
+      user.code = verificationCode;
+
+      await emailService.sendVerificationEmail(user.email, verificationCode);
 
       return await User.create(user);
     } catch (error) {

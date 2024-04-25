@@ -98,7 +98,7 @@ function AuthForm() {
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:9020/auth/local', {
+            const response = await fetch('http://localhost:9020/api/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
