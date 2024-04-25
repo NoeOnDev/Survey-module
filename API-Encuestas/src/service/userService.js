@@ -51,7 +51,8 @@ class UserService {
         );
       }
 
-      user.isVerified = true;
+      // Elimina el código de verificación del usuario
+      user.code = null;
       await user.save();
 
       return user;
