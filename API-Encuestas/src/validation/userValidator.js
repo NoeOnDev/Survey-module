@@ -1,5 +1,5 @@
 import { check } from "express-validator";
-import { handleValidationErrors } from "../middleware/validationErrorHandler.js";
+import { handleValidationErrors } from "../middleware/validationErrorHandlerMiddleware.js";
 
 export const validateUser = [
   check("email")
