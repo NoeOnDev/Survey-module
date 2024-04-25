@@ -129,7 +129,7 @@ function AuthForm() {
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:9020/auth/verify', {
+            const response = await fetch('http://localhost:9020/api/users/verify', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

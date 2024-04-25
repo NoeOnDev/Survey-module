@@ -14,6 +14,19 @@ class UserController {
       next(error);
     }
   }
+
+  async verifyUser(req, res, next) {
+    try {
+      const { email, code } = req.body;
+      const user = await userService.verifyUserCode(email, code);
+      res.status(200).json({
+        status: "success",
+        data: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new UserController();
