@@ -1,4 +1,4 @@
-import userService from "../instance/userServiceInstance.js";
+import userService from "../factory/userServiceFactory.js";
 
 class UserController {
   constructor() {}
