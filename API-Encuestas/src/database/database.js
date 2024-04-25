@@ -32,4 +32,4 @@ async function syncDB() {
   }
 }
 
-export { sequelize, User, connectDB, syncDB };
+export { User, connectDB, syncDB };
