@@ -3,7 +3,7 @@ import morgan from "morgan";
 import cors from "cors";
 import { connectDB, syncDB } from "./database/database.js";
 import userRoutes from "./routes/userRoutes.js";
-import errorHandling from "./middleware/errorHandling.js";
+import errorHandling from "./middleware/errorHandlingMiddleware.js";
 import "./model/userModel.js";
 
 process.loadEnvFile();
