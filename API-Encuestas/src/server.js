@@ -1,18 +1,19 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import { connectDB, syncDB } from "./database/database.js";
 
 process.loadEnvFile();
 
 class Server {
-  constructor(userRoutes, errorHandling) {
+  constructor(userRoutes, errorHandling, dbConnector, dbSyncer) {
     this.app = express();
     this.port = process.env.PORT;
     this.corsOptions = {
       origin: process.env.CORS_ORIGIN,
       credentials: true,
     };
+    this.dbConnector = dbConnector;
+    this.dbSyncer = dbSyncer;
     this.userRoutes = userRoutes;
     this.errorHandling = errorHandling;
     this.config();
@@ -37,8 +38,8 @@ class Server {
       console.log(`Server running on http://localhost:${this.port}`);
     });
 
-    await connectDB();
-    await syncDB();
+    await this.dbConnector();
+    await this.dbSyncer();
   }
 }
 
