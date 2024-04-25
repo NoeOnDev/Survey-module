@@ -4,7 +4,7 @@ import CustomError from "../helper/customError.js";
 class UserService {
   constructor() {}
 
-  async createUser(user) {
+  async findOrCreateUser(user) {
     try {
       const existingUser = await User.findOne({ where: { email: user.email } });
       if (existingUser) {
