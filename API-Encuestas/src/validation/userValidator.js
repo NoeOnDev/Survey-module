@@ -7,7 +7,7 @@ export const validateUser = [
     .isEmail()
     .withMessage("Must be a valid email")
     .normalizeEmail(),
-  handleValidationErrors
+  handleValidationErrors,
 ];
 
 export const validateUserVerification = [
@@ -22,5 +22,5 @@ export const validateUserVerification = [
     .withMessage("Must be a number")
     .isLength({ min: 6, max: 6 })
     .withMessage("Must be a 6 digit code"),
-  handleValidationErrors
+  handleValidationErrors,
 ];
