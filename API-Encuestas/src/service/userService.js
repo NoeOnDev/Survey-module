@@ -1,5 +1,5 @@
 import User from "../model/user.js";
-import CustomError from "../helper/customError.js";
+import CustomError from "../helper/customErrorHelper.js";
 
 class UserService {
   constructor() {}

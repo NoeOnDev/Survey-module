@@ -1,5 +1,5 @@
 import { check, validationResult } from "express-validator";
-import CustomError from "../helper/customError.js";
+import CustomError from "../helper/customErrorHelper.js";
 
 export const validateUser = [
   check("email")
