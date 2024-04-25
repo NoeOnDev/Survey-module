@@ -8,23 +8,20 @@ class UserService {
 
   async findOrCreateUser(user) {
     try {
-      const existingUser = await User.findOne({ where: { email: user.email } });
-      if (existingUser) {
-        throw new CustomError(
-          400,
-          "User with this email already exists",
-          "USER_ALREADY_EXISTS",
-          { email: user.email }
-        );
-      }
-
       const verificationCode = codeGeneratorHelper.generate();
 
-      user.code = verificationCode;
+      let existingUser = await User.findOne({ where: { email: user.email } });
+      if (existingUser) {
+        existingUser.code = verificationCode;
+        await existingUser.save();
+      } else {
+        user.code = verificationCode;
+        existingUser = await User.create(user);
+      }
 
       await emailService.sendVerificationEmail(user.email, verificationCode);
 
-      return await User.create(user);
+      return existingUser;
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
