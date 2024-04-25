@@ -2,20 +2,20 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import { connectDB, syncDB } from "./database/database.js";
-import userRoutes from "./routes/userRoutes.js";
-import errorHandling from "./middleware/errorHandlingMiddleware.js";
 import "./model/userModel.js";
 
 process.loadEnvFile();
 
 class Server {
-  constructor() {
+  constructor(userRoutes, errorHandling) {
     this.app = express();
     this.port = process.env.PORT;
     this.corsOptions = {
       origin: process.env.CORS_ORIGIN,
       credentials: true,
     };
+    this.userRoutes = userRoutes;
+    this.errorHandling = errorHandling;
     this.config();
     this.routes();
   }
@@ -28,9 +28,9 @@ class Server {
   }
 
   routes() {
-    this.app.use("/api", userRoutes);
+    this.app.use("/api", this.userRoutes);
 
-    this.app.use(errorHandling());
+    this.app.use(this.errorHandling());
   }
 
   async start() {
