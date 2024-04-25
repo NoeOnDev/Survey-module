@@ -1,4 +1,4 @@
-import { check, validationResult } from "express-validator";
+import { check } from "express-validator";
 import { handleValidationErrors } from "../middleware/validationErrorHandler.js";
 
 export const validateUser = [
