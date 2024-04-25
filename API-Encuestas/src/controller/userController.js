@@ -1,12 +1,13 @@
-import userService from "../service/userService.js";
+import userService from "../instance/userServiceInstance.js";
 
 class UserController {
   constructor() {}
 
   async createUser(req, res, next) {
     try {
-      const user = await userService.findOrCreateUser(req.body);
-      res.status(201).json({
+      const { email } = req.body;
+      const user = await userService.findOrCreateUser(email);
+      res.status(200).json({
         status: "success",
         data: user,
       });

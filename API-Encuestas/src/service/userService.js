@@ -1,32 +1,32 @@
-import User from "../model/userModel.js";
-import CustomError from "../helper/customErrorHelper.js";
-import codeGeneratorHelper from "../helper/codeGeneratorHelper.js";
-import emailService from "./emailService.js";
-
 class UserService {
-  constructor() {}
+  constructor(userModel, customError, codeGenerator, emailService) {
+    this.userModel = userModel;
+    this.customError = customError;
+    this.codeGenerator = codeGenerator;
+    this.emailService = emailService;
+  }
 
-  async findOrCreateUser(user) {
+  async findOrCreateUser(email) {
     try {
-      const verificationCode = codeGeneratorHelper.generate();
+      const verificationCode = this.codeGenerator.generate();
 
-      let existingUser = await User.findOne({ where: { email: user.email } });
+      let existingUser = await this.userModel.findOne({ where: { email: email } });
       if (existingUser) {
         existingUser.code = verificationCode;
         await existingUser.save();
       } else {
-        user.code = verificationCode;
-        existingUser = await User.create(user);
+        const user = { email: email, code: verificationCode };
+        existingUser = await this.userModel.create(user);
       }
 
-      await emailService.sendVerificationEmail(user.email, verificationCode);
+      await this.emailService.sendVerificationEmail(email, verificationCode);
 
       return existingUser;
     } catch (error) {
-      if (error instanceof CustomError) {
+      if (error instanceof this.customError) {
         throw error;
       } else {
-        throw new CustomError(500, "Error creating user", "INTERNAL_ERROR", {
+        throw new this.customError(500, "Error creating user", "INTERNAL_ERROR", {
           originalError: error.message,
         });
       }
@@ -35,25 +35,25 @@ class UserService {
 
   async resendVerificationCode(email) {
     try {
-      const user = await User.findOne({ where: { email: email } });
+      const user = await this.userModel.findOne({ where: { email: email } });
       if (!user) {
-        throw new CustomError(404, "User not found", "USER_NOT_FOUND", {
+        throw new this.customError(404, "User not found", "USER_NOT_FOUND", {
           email: email,
         });
       }
 
-      const newVerificationCode = codeGeneratorHelper.generate();
+      const newVerificationCode = this.codeGenerator.generate();
       user.code = newVerificationCode;
       await user.save();
 
-      await emailService.sendVerificationEmail(email, newVerificationCode);
+      await this.emailService.sendVerificationEmail(email, newVerificationCode);
 
       return user;
     } catch (error) {
-      if (error instanceof CustomError) {
+      if (error instanceof this.customError) {
         throw error;
       } else {
-        throw new CustomError(
+        throw new this.customError(
           500,
           "Error resending verification code",
           "INTERNAL_ERROR",
@@ -67,15 +67,15 @@ class UserService {
 
   async verifyUserCode(email, code) {
     try {
-      const user = await User.findOne({ where: { email: email } });
+      const user = await this.userModel.findOne({ where: { email: email } });
       if (!user) {
-        throw new CustomError(404, "User not found", "USER_NOT_FOUND", {
+        throw new this.customError(404, "User not found", "USER_NOT_FOUND", {
           email: email,
         });
       }
 
       if (user.code !== code) {
-        throw new CustomError(
+        throw new this.customError(
           400,
           "Invalid verification code",
           "INVALID_VERIFICATION_CODE",
@@ -88,10 +88,10 @@ class UserService {
 
       return user;
     } catch (error) {
-      if (error instanceof CustomError) {
+      if (error instanceof this.customError) {
         throw error;
       } else {
-        throw new CustomError(
+        throw new this.customError(
           500,
           "Error verifying user code",
           "INTERNAL_ERROR",
@@ -104,4 +104,4 @@ class UserService {
   }
 }
 
-export default new UserService();
+export default UserService;
