@@ -7,7 +7,7 @@ import {
 function createUserRoutes(userController) {
   const router = Router();
 
-  router.post("/users", validateUser, userController.createUser);
+router.post("/users", validateUser, userController.createUser);
   router.post(
     "/users/resend",
     validateUser,

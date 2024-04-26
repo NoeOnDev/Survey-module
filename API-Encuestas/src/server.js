@@ -1,6 +1,9 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerConfig from "./config/swaggerConfig.js"
 
 process.loadEnvFile();
 
@@ -25,10 +28,13 @@ class Server {
     this.app.use(cors(this.corsOptions));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
+
+    const specs = swaggerJsdoc(swaggerConfig);
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
   }
 
   routes() {
-    this.app.use("/api", this.userRoutes);
+    this.app.use(this.userRoutes);
 
     this.app.use(this.errorHandling());
   }
