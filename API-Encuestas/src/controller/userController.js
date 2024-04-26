@@ -1,12 +1,12 @@
+import userService from "../factory/userServiceFactory.js";
+
 class UserController {
-  constructor(userService) {
-    this.userService = userService;
-  }
+  constructor() {}
 
   async createUser(req, res, next) {
     try {
       const { email } = req.body;
-      const user = await this.userService.createUser(email);
+      const user = await userService.findOrCreateUser(email);
       res.status(200).json({
         status: "success",
         data: user,
@@ -19,7 +19,7 @@ class UserController {
   async resendVerificationCode(req, res, next) {
     try {
       const { email } = req.body;
-      const user = await this.userService.resendVerificationCode(email);
+      const user = await userService.resendVerificationCode(email);
       res.status(200).json({
         status: "success",
         data: user,
@@ -32,7 +32,7 @@ class UserController {
   async verifyUser(req, res, next) {
     try {
       const { email, code } = req.body;
-      const user = await this.userService.verifyUserCode(email, code);
+      const user = await userService.verifyUserCode(email, code);
       res.status(200).json({
         status: "success",
         data: user,
@@ -43,4 +43,4 @@ class UserController {
   }
 }
 
-export default UserController;
+export default new UserController();
