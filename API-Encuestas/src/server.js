@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerConfig from "./config/swaggerConfig.js"
@@ -28,6 +29,7 @@ class Server {
     this.app.use(cors(this.corsOptions));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(cookieParser());
 
     const specs = swaggerJsdoc(swaggerConfig);
     this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
