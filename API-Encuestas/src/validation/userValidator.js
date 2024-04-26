@@ -4,6 +4,8 @@ import { handleValidationErrors } from "../middleware/validationErrorHandlerMidd
 export const validateUser = [
   check("email")
     .trim()
+    .notEmpty()
+    .withMessage("Email is required")
     .isEmail()
     .withMessage("Must be a valid email")
     .normalizeEmail(),
@@ -13,11 +15,15 @@ export const validateUser = [
 export const validateUserVerification = [
   check("email")
     .trim()
+    .notEmpty()
+    .withMessage("Email is required")
     .isEmail()
     .withMessage("Must be a valid email")
     .normalizeEmail(),
   check("code")
     .trim()
+    .notEmpty()
+    .withMessage("Code is required")
     .isNumeric()
     .withMessage("Must be a number")
     .isLength({ min: 6, max: 6 })
