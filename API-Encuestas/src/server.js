@@ -4,12 +4,11 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
-import swaggerConfig from "./config/swaggerConfig.js"
 
 process.loadEnvFile();
 
 class Server {
-  constructor(userRoutes, errorHandling, dbConnector, dbSyncer) {
+  constructor(userRoutes, errorHandling, dbConnector, dbSyncer, swaggerConfig) {
     this.app = express();
     this.port = process.env.PORT;
     this.corsOptions = {
@@ -20,6 +19,7 @@ class Server {
     this.dbSyncer = dbSyncer;
     this.userRoutes = userRoutes;
     this.errorHandling = errorHandling;
+    this.swaggerConfig = swaggerConfig;
     this.config();
     this.routes();
   }
@@ -31,7 +31,7 @@ class Server {
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
 
-    const specs = swaggerJsdoc(swaggerConfig);
+    const specs = swaggerJsdoc(this.swaggerConfig);
     this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
   }
 
