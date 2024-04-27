@@ -16,7 +16,7 @@ class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   resendVerificationCode = async (req, res, next) => {
     try {
@@ -29,7 +29,7 @@ class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   verifyUser = async (req, res, next) => {
     try {
@@ -44,7 +44,7 @@ class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }
 
 export default UserController;

@@ -1,10 +1,12 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+
+process.loadEnvFile();
 
 class JwtHelper {
   generateToken(id, email) {
     const payload = { id, email };
     const secret = process.env.JWT_SECRET;
-    const options = { expiresIn: '1h' };
+    const options = { expiresIn: "1h" };
     return jwt.sign(payload, secret, options);
   }
 }
