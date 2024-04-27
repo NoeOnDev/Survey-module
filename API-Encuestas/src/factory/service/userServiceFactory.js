@@ -6,7 +6,7 @@ import UserService from "../../service/userService.js";
 
 const userService = new UserService(
   User,
-  CustomError,                                  
+  CustomError,
   codeGeneratorHelper,
   emailService
 );
