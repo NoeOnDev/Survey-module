@@ -15,29 +15,32 @@ class Server {
       origin: process.env.CORS_ORIGIN,
       credentials: true,
     };
+    this.specs = null;
     this.dbConnector = dbConnector;
     this.dbSyncer = dbSyncer;
     this.userRoutes = userRoutes;
     this.errorHandling = errorHandling;
     this.swaggerConfig = swaggerConfig;
-    this.config();
+    this.configureMiddleware();
+    this.configureSwagger();
     this.routes();
   }
 
-  config() {
+  configureMiddleware() {
     this.app.use(morgan("dev"));
     this.app.use(cors(this.corsOptions));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
+  }
 
-    const specs = swaggerJsdoc(this.swaggerConfig);
-    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+  configureSwagger() {
+    this.specs = swaggerJsdoc(this.swaggerConfig);
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(this.specs));
   }
 
   routes() {
     this.app.use(this.userRoutes);
-
     this.app.use(this.errorHandling());
   }
 
