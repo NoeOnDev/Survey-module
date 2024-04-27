@@ -1,16 +1,11 @@
 import jwt from 'jsonwebtoken';
 
 class JwtHelper {
-  constructor(secret) {
-    this.secret = secret;
-  }
-
-  generateToken(user) {
-    const payload = {
-      id: user.id,
-      email: user.email
-    };
-    return jwt.sign(payload, this.secret, { expiresIn: '1h' });
+  generateToken(id, email) {
+    const payload = { id, email };
+    const secret = process.env.JWT_SECRET;
+    const options = { expiresIn: '1h' };
+    return jwt.sign(payload, secret, options);
   }
 }
 

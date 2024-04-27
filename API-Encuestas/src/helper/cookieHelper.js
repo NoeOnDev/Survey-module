@@ -1,7 +1,7 @@
 class CookieHelper {
-    setSecureCookie(res, name, value) {
-      res.cookie(name, value, { httpOnly: true, secure: true });
-    }
+  setTokenCookie(res, token) {
+    res.cookie('Auth_Token', token, { httpOnly: true, secure: true, sameSite: 'None'});
   }
-  
-  export default CookieHelper;
+}
+
+export default CookieHelper;
