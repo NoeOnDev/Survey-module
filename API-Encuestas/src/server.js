@@ -9,7 +9,14 @@ import swaggerJsdoc from "swagger-jsdoc";
 process.loadEnvFile();
 
 class Server {
-  constructor(userRoutes, errorHandling, dbConnector, dbSyncer, swaggerConfig) {
+  constructor(
+    userRoutes,
+    googleAuthRoutes,
+    errorHandling,
+    dbConnector,
+    dbSyncer,
+    swaggerConfig
+  ) {
     this.app = express();
     this.port = process.env.PORT;
     this.corsOptions = {
@@ -20,6 +27,7 @@ class Server {
     this.dbConnector = dbConnector;
     this.dbSyncer = dbSyncer;
     this.userRoutes = userRoutes;
+    this.googleAuthRoutes = googleAuthRoutes;
     this.errorHandling = errorHandling;
     this.swaggerConfig = swaggerConfig;
     this.configureMiddleware();
@@ -43,6 +51,7 @@ class Server {
 
   routes() {
     this.app.use(this.userRoutes);
+    this.app.use(this.googleAuthRoutes);
     this.app.use(this.errorHandling());
   }
 

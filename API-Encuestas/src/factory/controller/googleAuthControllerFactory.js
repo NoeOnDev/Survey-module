@@ -1,4 +1,4 @@
-import googleAuthService from "../service/googleAuthServiceFactory";
+import googleAuthService from "../service/googleAuthServiceFactory.js";
 import JwtHelper from "../../helper/jwtHelper.js";
 import CookieHelper from "../../helper/cookieHelper.js";
 import GoogleAuthController from "../../controller/googleAuthController.js";
