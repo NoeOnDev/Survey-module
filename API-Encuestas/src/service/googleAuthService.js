@@ -1,8 +1,6 @@
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 
-process.loadEnvFile();
-
 const GOOGLE_STRATEGY = "google";
 const GOOGLE_SCOPES = ["profile", "email"];
 

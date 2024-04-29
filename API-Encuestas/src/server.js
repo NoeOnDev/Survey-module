@@ -6,8 +6,6 @@ import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 
-process.loadEnvFile();
-
 class Server {
   constructor(
     userRoutes,

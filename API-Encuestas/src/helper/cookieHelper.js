@@ -1,5 +1,3 @@
-process.loadEnvFile();
-
 class CookieHelper {
   setTokenCookie(res, token) {
     const oneWeek = 7 * 24 * 60 * 60 * 1000;

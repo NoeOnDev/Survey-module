@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
 
-process.loadEnvFile();
-
 class JwtHelper {
   generateToken(id, email) {
     const payload = { id, email };

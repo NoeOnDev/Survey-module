@@ -1,5 +1,3 @@
-process.loadEnvFile();
-
 class EmailService {
   constructor(transporter) {
     this.transporter = transporter;
