@@ -53,7 +53,10 @@ class GoogleAuthService {
   }
 
   callback() {
-    return passport.authenticate(GOOGLE_STRATEGY, { session: false, failureRedirect: "http://localhost:5173/" });
+    return passport.authenticate(GOOGLE_STRATEGY, {
+      session: false,
+      failureRedirect: "http://localhost:5173/",
+    });
   }
 }
 

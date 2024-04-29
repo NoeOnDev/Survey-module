@@ -5,5 +5,12 @@ import errorHandling from "../middleware/errorHandlingMiddleware.js";
 import swaggerConfig from "../config/swaggerConfig.js";
 import Server from "../server.js";
 
-const server = new Server(userRoutes, googleAuthRoutes, errorHandling, connectDB, syncDB, swaggerConfig);
+const server = new Server(
+  userRoutes,
+  googleAuthRoutes,
+  errorHandling,
+  connectDB,
+  syncDB,
+  swaggerConfig
+);
 export default server;

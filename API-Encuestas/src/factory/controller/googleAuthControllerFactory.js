@@ -6,5 +6,9 @@ import GoogleAuthController from "../../controller/googleAuthController.js";
 const jwtHelper = new JwtHelper();
 const cookieHelper = new CookieHelper();
 
-const googleAuthController = new GoogleAuthController(googleAuthService, jwtHelper, cookieHelper);
+const googleAuthController = new GoogleAuthController(
+  googleAuthService,
+  jwtHelper,
+  cookieHelper
+);
 export default googleAuthController;
