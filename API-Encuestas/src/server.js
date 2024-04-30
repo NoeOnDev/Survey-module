@@ -54,12 +54,14 @@ class Server {
   }
 
   async start() {
+    console.time("Ready in");
     this.app.listen(this.port, () => {
       console.log(`Server running on http://localhost:${this.port}`);
     });
 
     await this.dbConnector();
     await this.dbSyncer();
+    console.timeEnd("Ready in");
   }
 }
 
