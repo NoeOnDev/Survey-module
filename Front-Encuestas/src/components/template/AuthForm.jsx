@@ -116,7 +116,6 @@ function AuthForm() {
                     startCounter();
                 }, 1000);
             } else {
-                alert(`Error: ${data.message}`);
                 setIsLoading(false);
             }
         } catch (error) {
@@ -176,7 +175,6 @@ function AuthForm() {
                 if (response.ok) {
                     startCounter();
                 } else {
-                    alert(`Error: ${data.message}`);
                     setIsLoading(false);
                 }
             } catch (error) {
