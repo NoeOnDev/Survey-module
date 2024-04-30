@@ -26,7 +26,7 @@ class GoogleAuthController {
             req.user.email
           );
           this.cookieHelper.setTokenCookie(res, token);
-          res.redirect("http://localhost:5173/home");
+          res.redirect(process.env.GOOGLE_SUCCESS_REDIRECT);
         }
       });
     } catch (error) {

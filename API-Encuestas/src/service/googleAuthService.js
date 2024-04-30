@@ -55,7 +55,7 @@ class GoogleAuthService {
   callback() {
     return passport.authenticate(GOOGLE_STRATEGY, {
       session: false,
-      failureRedirect: "http://localhost:5173/",
+      failureRedirect: process.env.GOOGLE_FAILURE_REDIRECT,
     });
   }
 }
