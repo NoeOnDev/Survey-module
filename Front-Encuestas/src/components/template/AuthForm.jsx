@@ -10,6 +10,7 @@ function AuthForm() {
     const [counter, setCounter] = useState(30);
     const [counterId, setCounterId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isResendLoading, setIsResendLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFadingOut, setIsFadingOut] = useState(false);
     const inputsRefs = useRef([]);
@@ -158,8 +159,8 @@ function AuthForm() {
 
     const handleResendCode = async (event) => {
         event.preventDefault();
-        if (counter === 0) {
-            setIsLoading(true);
+        if (counter === 0 && !isResendLoading) {
+            setIsResendLoading(true);
 
             try {
                 const response = await fetch('http://localhost:9020/users/resend', {
@@ -174,14 +175,14 @@ function AuthForm() {
 
                 if (response.ok) {
                     startCounter();
-                    setIsLoading(false);
                 } else {
                     alert(`Error: ${data.message}`);
                     setIsLoading(false);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                setIsLoading(false);
+            } finally {
+                setIsResendLoading(false);
             }
         }
     };
@@ -258,10 +259,13 @@ function AuthForm() {
                             ))}
                         </div>
                         <span>Didn't receive the verification code?</span>
-                        <button type="button" className={verificationStyles.buttonResend}
-                            onClick={handleResendCode} disabled={counter > 0}>
-                            {counter > 0 ? `Resend available in ${counter} seconds` : 'Resend code'}
-                        </button>
+                        <div className={verificationStyles.containerResendCode}>
+                            <button type="button" className={verificationStyles.buttonResend}
+                                onClick={handleResendCode} disabled={counter > 0}>
+                                {counter > 0 ? `Resend available in ${counter} seconds` : 'Resend code'}
+                            </button>
+                            {isResendLoading && <div className={verificationStyles.loaderResendCode}></div>}
+                        </div>
                     </form>
                 </div>
             </Modal>
