@@ -6,35 +6,6 @@ class UserService {
     this.emailService = emailService;
   }
 
-  async findOrCreateGoogleUser(email, googleId, name) {
-    try {
-      let user = await this.userModel.findOne({ where: { email } });
-
-      if (user) {
-        user.googleId = googleId;
-        user.name = name;
-        await user.save();
-      } else {
-        user = await this.userModel.create({ googleId, email, name });
-      }
-  
-      return user;
-    } catch (error) {
-      if (error instanceof this.customError) {
-        throw error;
-      } else {
-        throw new this.customError(
-          500,
-          "Error creating Google user",
-          "INTERNAL_ERROR",
-          {
-            originalError: error.message,
-          }
-        );
-      }
-    }
-  }
-
   async findOrCreateUser(email) {
     try {
       const verificationCode = this.codeGenerator.generate();

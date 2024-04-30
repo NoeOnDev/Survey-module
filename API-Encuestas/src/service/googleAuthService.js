@@ -5,9 +5,9 @@ const GOOGLE_STRATEGY = "google";
 const GOOGLE_SCOPES = ["profile", "email"];
 
 class GoogleAuthService {
-  constructor(customError, userService) {
+  constructor(customError, userModel) {
     this.customError = customError;
-    this.userService = userService;
+    this.userModel = userModel;
 
     passport.use(
       new GoogleStrategy(
@@ -22,11 +22,15 @@ class GoogleAuthService {
             const googleId = profile.id;
             const name = profile.displayName;
 
-            const user = await this.userService.findOrCreateGoogleUser(
-              email,
-              googleId,
-              name
-            );
+            let user = await this.userModel.findOne({ where: { email } });
+
+            if (user) {
+              user.googleId = googleId;
+              user.name = name;
+              await user.save();
+            } else {
+              user = await this.userModel.create({ googleId, email, name });
+            }
 
             done(null, user);
           } catch (error) {
