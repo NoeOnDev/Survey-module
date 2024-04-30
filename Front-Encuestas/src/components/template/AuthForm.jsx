@@ -260,7 +260,7 @@ function AuthForm() {
                         <div className={verificationStyles.containerResendCode}>
                             <button type="button" className={verificationStyles.buttonResend}
                                 onClick={handleResendCode} disabled={counter > 0}>
-                                {counter > 0 ? `Resend available in ${counter} seconds` : 'Resend code'}
+                                {isResendLoading ? 'Sending code' : (counter > 0 ? `Resend available in ${counter} seconds` : 'Resend code')}
                             </button>
                             {isResendLoading && <div className={verificationStyles.loaderResendCode}></div>}
                         </div>
