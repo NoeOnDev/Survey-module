@@ -1,17 +1,8 @@
-import { Sequelize } from "sequelize";
 import initializeUserModel from "../model/userModel.js";
 
-const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT } = process.env;
-
 class DatabaseManager {
-  constructor() {
-    this.sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
-      host: DB_HOST,
-      port: DB_PORT,
-      dialect: "postgres",
-      logging: false,
-    });
-
+  constructor(sequelize) {
+    this.sequelize = sequelize;
     this.User = initializeUserModel(this.sequelize);
   }
 
@@ -34,4 +25,4 @@ class DatabaseManager {
   }
 }
 
-export default new DatabaseManager();
+export default DatabaseManager;
