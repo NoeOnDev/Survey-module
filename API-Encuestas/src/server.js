@@ -11,8 +11,7 @@ class Server {
     userRoutes,
     googleAuthRoutes,
     errorHandling,
-    dbConnector,
-    dbSyncer,
+    database,
     swaggerConfig
   ) {
     this.app = express();
@@ -22,8 +21,7 @@ class Server {
       credentials: true,
     };
     this.specs = null;
-    this.dbConnector = dbConnector;
-    this.dbSyncer = dbSyncer;
+    this.database = database;
     this.userRoutes = userRoutes;
     this.googleAuthRoutes = googleAuthRoutes;
     this.errorHandling = errorHandling;
@@ -59,8 +57,8 @@ class Server {
       console.log(`Server running on http://localhost:${this.port}`);
     });
 
-    await this.dbConnector();
-    await this.dbSyncer();
+    await this.database.authenticate();
+    await this.database.sync();
     console.timeEnd("Ready in");
   }
 }

@@ -1,4 +1,4 @@
-import { connectDB, syncDB } from "../database/database.js";
+import database from "../database/database.js";
 import userRoutes from "./routes/userRoutesFactory.js";
 import googleAuthRoutes from "./routes/googleAuthRoutesFactory.js";
 import errorHandling from "../middleware/errorHandlingMiddleware.js";
@@ -9,8 +9,7 @@ const server = new Server(
   userRoutes,
   googleAuthRoutes,
   errorHandling,
-  connectDB,
-  syncDB,
+  database,
   swaggerConfig
 );
 export default server;
