@@ -1,4 +1,8 @@
 import express from "express";
+import morgan from "morgan";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import passport from "passport";
 
 class Server {
     constructor() {
@@ -10,13 +14,14 @@ class Server {
 
     config() {
         this.app.use(express.json());
+        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(morgan("dev"));
+        this.app.use(cors());
+        this.app.use(cookieParser());
+        this.app.use(passport.initialize());
     }
 
-    routes() {
-        this.app.get("/", (req, res) => {
-            res.send("Hello World");
-        });
-    }
+    routes() {}
 
     async start() {
         this.app.listen(this.port, () => {
